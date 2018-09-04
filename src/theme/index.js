@@ -3,10 +3,17 @@ import { injectGlobal } from 'emotion'
 const theme = {
   color: {
     text: '#555555',
+    primary: '',
+    secondary: '',
+    error: '#c91c1c',
+    success: '#38a52d',
+    buttonPrimary: '#7cca7e',
+    buttonSecondary: '#b4b4b4',
     background: '#cbc5c5',
     walletIcon: '#348b9f',
     currencyIcon: '#4a91e3',
-    posIcon: '#5fb061'
+    posIcon: '#5fb061',
+    fieldBorder: '#888888'
   },
   spacing: {
     mobile: {

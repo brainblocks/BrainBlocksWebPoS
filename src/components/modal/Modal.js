@@ -36,7 +36,6 @@ const getStyles = props => {
 
   const content = css`
     margin: 20% 5%;
-    background: green;
   `
 
   return { modal, closeButton, content }

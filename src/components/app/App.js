@@ -1,8 +1,11 @@
 import React, { Component, Fragment } from 'react'
 import styled from 'react-emotion'
+import { isValidNanoAddress } from 'functions/nano'
 import Dashboard from 'components/dashboard/Dashboard'
 import Calculator from 'components/calculator/Calculator'
 import Modal from 'components/modal/Modal'
+import AddressForm from 'components/forms/AddressForm'
+import CurrencyForm from 'components/forms/CurrencyForm'
 
 const Container = styled('div')`
   background: white;
@@ -24,7 +27,41 @@ const Container = styled('div')`
 class App extends Component {
   state = {
     openPanel: 'dashboard',
-    openModal: ''
+    openModal: '',
+    addressFieldValue: '',
+    address: '',
+    currencyFieldValue: 'USD',
+    currency: 'USD'
+  }
+
+  isAddressFieldValid = () => {
+    return isValidNanoAddress(this.state.addressFieldValue)
+  }
+
+  handleUpdateAddressField = event => {
+    this.setState({
+      addressFieldValue: event.target.value
+    })
+  }
+
+  handleUpdateCurrencyField = event => {
+    this.setState({
+      currencyFieldValue: event.target.value
+    })
+  }
+
+  handleSetAddress = () => {
+    this.setState({
+      address: this.state.addressFieldValue,
+      openModal: ''
+    })
+  }
+
+  handleSetCurrency = () => {
+    this.setState({
+      currency: this.state.currencyFieldValue,
+      openModal: ''
+    })
   }
 
   handleOpenModal = modal => () => {
@@ -40,16 +77,26 @@ class App extends Component {
   }
 
   render() {
+    console.log('Address: ' + this.state.address, 'Currency: ' + this.state.currency)
     return (
       <Container>
         {this.state.openPanel === 'dashboard' && (
           <Fragment>
             <Dashboard onOpenModal={this.handleOpenModal} />
             <Modal open={this.state.openModal === 'currency'} onClose={this.handleCloseModal}>
-              Currency modal content
+              <CurrencyForm
+                currencyFieldValue={this.state.currencyFieldValue}
+                onUpdateCurrency={this.handleUpdateCurrencyField}
+                onSaveCurrency={this.handleSetCurrency}
+              />
             </Modal>
             <Modal open={this.state.openModal === 'address'} onClose={this.handleCloseModal}>
-              Address modal content
+              <AddressForm
+                addressFieldValue={this.state.addressFieldValue}
+                addressFieldValid={this.isAddressFieldValid()}
+                onUpdateAddress={this.handleUpdateAddressField}
+                onSaveAddress={this.handleSetAddress}
+              />
             </Modal>
           </Fragment>
         )}

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "color": "^3.0.0",
     "emotion": "^9.2.8",
     "emotion-theming": "^9.2.6",
     "mdi-react": "^4.3.0",
