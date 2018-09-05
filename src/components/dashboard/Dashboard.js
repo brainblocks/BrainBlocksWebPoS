@@ -64,7 +64,7 @@ const Dashboard = props => {
             icon="calculator"
             title="PoS"
             color={theme.color.posIcon}
-            onClick={() => console.log('3')}
+            onClick={props.onOpenPoS}
           />
         </div>
       </div>

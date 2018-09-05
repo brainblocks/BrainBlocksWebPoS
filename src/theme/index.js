@@ -7,6 +7,7 @@ const theme = {
     secondary: '',
     error: '#c91c1c',
     success: '#38a52d',
+    lightestgray: '#ececec',
     buttonPrimary: '#7cca7e',
     buttonSecondary: '#b4b4b4',
     background: '#cbc5c5',

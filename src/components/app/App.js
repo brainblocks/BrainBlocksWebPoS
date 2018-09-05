@@ -38,6 +38,12 @@ class App extends Component {
     return isValidNanoAddress(this.state.addressFieldValue)
   }
 
+  getHandleSwitchPanel = panel => () => {
+    this.setState({
+      openPanel: panel
+    })
+  }
+
   handleUpdateAddressField = event => {
     this.setState({
       addressFieldValue: event.target.value
@@ -77,12 +83,14 @@ class App extends Component {
   }
 
   render() {
-    console.log('Address: ' + this.state.address, 'Currency: ' + this.state.currency)
     return (
       <Container>
         {this.state.openPanel === 'dashboard' && (
           <Fragment>
-            <Dashboard onOpenModal={this.handleOpenModal} />
+            <Dashboard
+              onOpenModal={this.handleOpenModal}
+              onOpenPoS={this.getHandleSwitchPanel('pos')}
+            />
             <Modal open={this.state.openModal === 'currency'} onClose={this.handleCloseModal}>
               <CurrencyForm
                 currencyFieldValue={this.state.currencyFieldValue}
@@ -100,7 +108,9 @@ class App extends Component {
             </Modal>
           </Fragment>
         )}
-        {this.state.openPanel === 'calculator' && <Calculator />}
+        {this.state.openPanel === 'pos' && (
+          <Calculator onBack={this.getHandleSwitchPanel('dashboard')} />
+        )}
       </Container>
     )
   }
