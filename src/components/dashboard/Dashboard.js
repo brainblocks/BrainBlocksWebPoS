@@ -66,6 +66,7 @@ const Dashboard = props => {
         </div>
         <div className={classes.button}>
           <SVGButton
+            disabled={!props.posEnabled}
             icon="calculator"
             title="PoS"
             color={theme.color.posIcon}

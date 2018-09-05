@@ -69,9 +69,9 @@ const getStyles = props => {
   `
   const curr2 = css`
     ${curr};
-    font-size: 5.5vh;
+    font-size: 6.4vh;
     @media (max-height: 550px) {
-      font-size: 34px;
+      font-size: 38px;
     }
   `
   const pad = css`
@@ -80,7 +80,6 @@ const getStyles = props => {
     left: 0;
     right: 0;
     height: 75%;
-    background: green;
   `
   const key = css`
     position: absolute;
@@ -210,6 +209,9 @@ const getStyles = props => {
     font-weight: bold;
     letter-spacing: 0;
     font-size: 2.8vw;
+    -webkit-tap-highlight-color: ${Color(theme.color.posIcon)
+      .darken(0.15)
+      .string()};
     &:hover,
     &:active {
       background: ${Color(theme.color.posIcon)

@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
-import styled from 'react-emotion'
+import { css } from 'react-emotion'
+import theme from 'theme'
 import { isValidNanoAddress } from 'functions/nano'
 import Dashboard from 'components/dashboard/Dashboard'
 import Calculator from 'components/calculator/Calculator'
@@ -25,33 +26,44 @@ const currencies = [
   }
 ]
 
-const Container = styled('div')`
-  background: white;
-  max-width: ${props => props.theme.bp.fullWidth}px;
-  box-shadow: 10px 10px 120px rgba(0, 0, 0, 0.2);
-  margin: auto;
-  height: 100vh;
-  width: 100%;
-  position: relative;
-  @media (min-height: ${props => props.theme.bp.fullHeight}px) {
-    height: ${props => props.theme.bp.fullHeight}px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+const getStyles = props => {
+  return {
+    container: css`
+      background: white;
+      max-width: ${theme.bp.fullWidth}px;
+      max-height: ${theme.bp.fullHeight}px;
+      box-shadow: 10px 10px 120px rgba(0, 0, 0, 0.2);
+      margin: auto;
+      height: 100vh;
+      width: 100%;
+      position: relative;
+      @media (min-height: ${theme.bp.fullHeight}px) {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    `
   }
-`
+}
 
 class App extends Component {
-  state = {
-    openPanel: 'dashboard',
-    openModal: '',
-    addressFieldValue: '',
-    address: '',
-    currencyFieldValue: 'USD',
-    currencyCode: 'USD',
-    currencyNanoPrice: 0,
-    currencySymbol: '$'
+  constructor(props) {
+    super(props)
+
+    const address = window.localStorage['bb_pos_address'] || ''
+    const currencyCode = window.localStorage['bb_pos_currencycode'] || 'USD'
+
+    this.state = {
+      address,
+      currencyCode,
+      openPanel: 'dashboard',
+      openModal: '',
+      addressFieldValue: address,
+      currencyFieldValue: currencyCode,
+      currencyNanoPrice: 0,
+      currencySymbol: '$'
+    }
   }
 
   isAddressFieldValid = () => {
@@ -77,6 +89,7 @@ class App extends Component {
   }
 
   handleSetAddress = () => {
+    window.localStorage['bb_pos_address'] = this.state.addressFieldValue
     this.setState({
       address: this.state.addressFieldValue,
       openModal: ''
@@ -88,6 +101,7 @@ class App extends Component {
     if (typeof currency === 'undefined') {
       throw new Error('Currency mismatch')
     }
+    window.localStorage['bb_pos_currencycode'] = currency.code
     this.setState({
       currencyCode: currency.code,
       currencyNanoPrice: currency.nanoPrice,
@@ -109,11 +123,14 @@ class App extends Component {
   }
 
   render() {
+    const classes = getStyles(this.props)
+
     return (
-      <Container>
+      <div className={classes.container}>
         {this.state.openPanel === 'dashboard' && (
           <Fragment>
             <Dashboard
+              posEnabled={isValidNanoAddress(this.state.address)}
               onOpenModal={this.handleOpenModal}
               onOpenPoS={this.getHandleSwitchPanel('pos')}
             />
@@ -143,7 +160,7 @@ class App extends Component {
             onBack={this.getHandleSwitchPanel('dashboard')}
           />
         )}
-      </Container>
+      </div>
     )
   }
 }

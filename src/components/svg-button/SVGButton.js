@@ -17,6 +17,15 @@ const getStyles = props => {
     text-align: center;
     width: 100%;
     cursor: pointer;
+    ${props.disabled &&
+      css`
+        cursor: default;
+        pointer-events: none;
+        &,
+        &:hover {
+          opacity: 0.5;
+        }
+      `};
   `
 
   const button = css`
@@ -42,6 +51,10 @@ const getStyles = props => {
     .${wrap}:hover & {
       opacity: 0.8;
     }
+    ${props.disabled &&
+      css`
+        opacity: 1 !important;
+      `};
   `
 
   const caption = css`
