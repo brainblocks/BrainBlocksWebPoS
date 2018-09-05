@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { css } from 'react-emotion'
+import Color from 'color'
+import ArrowLeftIcon from 'mdi-react/ArrowLeftIcon'
+import BackspaceIcon from 'mdi-react/BackspaceIcon'
 import theme from 'theme'
-import BackspaceIcon from 'svg/backspace_icon.svg'
+//import BackspaceIcon from 'svg/backspace_icon.svg'
 import SwitchIcon from 'svg/switch_icon.svg'
 
 const buttons = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.']
@@ -15,6 +18,60 @@ const getStyles = props => {
     right: 0;
     height: 25%;
     background: ${theme.color.currencyIcon};
+  `
+  const back = css`
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 4%;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    box-shadow: none !important;
+    outline: none !important;
+    span {
+      display: none;
+    }
+    @media (min-width: ${theme.bp.tablet}px) {
+      font-size: 18px;
+      span {
+        display: inline;
+        margin-left: 0.5em;
+      }
+    }
+  `
+  const currs = css`
+    position: absolute;
+    right: 4%;
+    text-align: right;
+    top: 50%;
+    transform: translateY(-50%);
+  `
+  const curr = css`
+    color: #fff;
+    display: block;
+    @media (max-height: 550px) {
+      line-height: 1.2;
+    }
+  `
+  const curr1 = css`
+    ${curr};
+    font-size: 2.8vh;
+    @media (max-height: 550px) {
+      font-size: 20px;
+    }
+  `
+  const curr2 = css`
+    ${curr};
+    font-size: 5.5vh;
+    @media (max-height: 550px) {
+      font-size: 34px;
+    }
   `
   const pad = css`
     position: absolute;
@@ -30,10 +87,18 @@ const getStyles = props => {
     height: 25%;
     border: none;
     background: white;
-    color: ${theme.color.text};
+    color: #201f1f;
+    cursor: pointer;
     outline: none !important;
     box-shadow: none !important;
-    &:active {
+    -webkit-tap-highlight-color: ${theme.color.lightestgray};
+    letter-spacing: 0.2em;
+    font-size: 3.4vw;
+    @media (min-width: ${theme.bp.fullWidth}px) {
+      font-size: 34px;
+    }
+    &:active,
+    &:hover {
       background: ${theme.color.lightestgray};
     }
   `
@@ -99,16 +164,24 @@ const getStyles = props => {
     ${key};
     ${key_bottom};
     left: 25%;
+    span {
+      font-size: 6vw;
+    }
   `
   const key_backspace = css`
     ${key};
     top: 0%;
     ${key_right};
+    color: ${theme.color.text};
   `
   const key_clear = css`
     ${key};
     top: 25%;
     ${key_right};
+    font-size: 3vw;
+    @media (min-width: ${theme.bp.fullWidth}px) {
+      font-size: 30px;
+    }
   `
   const key_switch = css`
     ${key};
@@ -123,6 +196,17 @@ const getStyles = props => {
     background: ${theme.color.posIcon};
     color: #fff;
     font-weight: bold;
+    letter-spacing: 0;
+    font-size: 2.8vw;
+    &:hover,
+    &:active {
+      background: ${Color(theme.color.posIcon)
+        .darken(0.15)
+        .string()};
+    }
+    @media (min-width: ${theme.bp.fullWidth}px) {
+      font-size: 28px;
+    }
   `
   const key_content = css`
     position: absolute;
@@ -130,10 +214,7 @@ const getStyles = props => {
     top: 50%;
     transform: translate(-50%, -50%);
     text-transform: uppercase;
-    font-size: 3.4vw;
-    @media (min-width: ${theme.bp.fullWidth}px) {
-      font-size: 34px;
-    }
+    font-size: inherit;
   `
   const key_icon = css`
     ${key_content};
@@ -145,6 +226,10 @@ const getStyles = props => {
   return {
     calculator,
     display,
+    currs,
+    curr1,
+    curr2,
+    back,
     pad,
     key_1,
     key_2,
@@ -178,7 +263,13 @@ class Calculator extends Component {
     return (
       <div className={classes.calculator}>
         <div className={classes.display}>
-          <button onClick={this.props.onBack}>Dashboard</button>
+          <button className={classes.back} onClick={this.props.onBack}>
+            <ArrowLeftIcon /> <span>Dashboard</span>
+          </button>
+          <div className={classes.currs}>
+            <span className={classes.curr1}>123.4 NANO</span>
+            <span className={classes.curr2}>$205.70</span>
+          </div>
         </div>
         <div className={classes.pad}>
           {buttons.map(btn => (
@@ -187,7 +278,7 @@ class Calculator extends Component {
             </button>
           ))}
           <button className={classes.key_backspace}>
-            <img className={classes.key_icon} src={BackspaceIcon} alt="Switch" />
+            <BackspaceIcon className={classes.key_icon} />
           </button>
           <button className={classes.key_clear}>
             <span className={classes.key_content}>Clear</span>

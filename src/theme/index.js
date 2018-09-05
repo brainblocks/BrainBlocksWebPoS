@@ -43,10 +43,20 @@ injectGlobal`
   body, html {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: "Montserrat", sans-serif;
     background: ${theme.color.background};
     color: ${theme.color.text};
     line-height: 1.5;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  button {
+    color: ${theme.color.text};
+    font-family: "Montserrat", sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 `
 

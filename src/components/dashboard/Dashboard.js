@@ -2,6 +2,7 @@ import React from 'react'
 import { css } from 'react-emotion'
 import theme from 'theme'
 import SVGButton from 'components/svg-button/SVGButton'
+import BrainblocksPOSLogo from 'svg/brainblocks_pos_logo.svg'
 
 const getStyles = props => {
   const dashboard = css`
@@ -16,6 +17,10 @@ const getStyles = props => {
 
   const header = css`
     margin-bottom: 6%;
+    img {
+      width: 60%;
+      max-width: 320px;
+    }
   `
 
   const buttons = css`
@@ -40,7 +45,7 @@ const Dashboard = props => {
   return (
     <div className={classes.dashboard}>
       <div className={classes.header}>
-        <img src="images/bb-pos-logo.png" alt="BrainBlocks Logo" />
+        <img src={BrainblocksPOSLogo} alt="BrainBlocks Logo" />
       </div>
       <div className={classes.buttons}>
         <div className={classes.button}>

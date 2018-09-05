@@ -49,13 +49,13 @@ const getStyles = props => {
     display: block;
     text-align: center;
     padding: 10px 0;
-    font-weight: bold;
+    font-weight: 600;
     @media (min-width: ${theme.bp.tablet}px) {
       padding: 16px 0;
     }
     @media (min-width: ${theme.bp.desktop}px) {
       padding: 20px 0;
-      font-size: 18px;
+      font-size: 20px;
     }
   `
 
