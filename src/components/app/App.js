@@ -7,6 +7,24 @@ import Modal from 'components/modal/Modal'
 import AddressForm from 'components/forms/AddressForm'
 import CurrencyForm from 'components/forms/CurrencyForm'
 
+const currencies = [
+  {
+    code: 'AUD',
+    symbol: '$',
+    nanoPrice: 4.18
+  },
+  {
+    code: 'USD',
+    symbol: '$',
+    nanoPrice: 3.4
+  },
+  {
+    code: 'CNY',
+    symbol: '¥',
+    nanoPrice: 21.02
+  }
+]
+
 const Container = styled('div')`
   background: white;
   max-width: ${props => props.theme.bp.fullWidth}px;
@@ -31,7 +49,9 @@ class App extends Component {
     addressFieldValue: '',
     address: '',
     currencyFieldValue: 'USD',
-    currency: 'USD'
+    currencyCode: 'USD',
+    currencyNanoPrice: 0,
+    currencySymbol: '$'
   }
 
   isAddressFieldValid = () => {
@@ -64,8 +84,14 @@ class App extends Component {
   }
 
   handleSetCurrency = () => {
+    const currency = currencies.find(c => c.code === this.state.currencyFieldValue)
+    if (typeof currency === 'undefined') {
+      throw new Error('Currency mismatch')
+    }
     this.setState({
-      currency: this.state.currencyFieldValue,
+      currencyCode: currency.code,
+      currencyNanoPrice: currency.nanoPrice,
+      currencySymbol: currency.symbol,
       openModal: ''
     })
   }
@@ -93,6 +119,7 @@ class App extends Component {
             />
             <Modal open={this.state.openModal === 'currency'} onClose={this.handleCloseModal}>
               <CurrencyForm
+                currencies={currencies}
                 currencyFieldValue={this.state.currencyFieldValue}
                 onUpdateCurrency={this.handleUpdateCurrencyField}
                 onSaveCurrency={this.handleSetCurrency}
@@ -109,7 +136,12 @@ class App extends Component {
           </Fragment>
         )}
         {this.state.openPanel === 'pos' && (
-          <Calculator onBack={this.getHandleSwitchPanel('dashboard')} />
+          <Calculator
+            currencyCode={this.state.currencyCode}
+            currencySymbol={this.state.currencySymbol}
+            currencyNanoPrice={this.state.currencyNanoPrice}
+            onBack={this.getHandleSwitchPanel('dashboard')}
+          />
         )}
       </Container>
     )

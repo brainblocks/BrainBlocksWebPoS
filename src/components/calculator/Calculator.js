@@ -4,7 +4,7 @@ import Color from 'color'
 import ArrowLeftIcon from 'mdi-react/ArrowLeftIcon'
 import BackspaceIcon from 'mdi-react/BackspaceIcon'
 import theme from 'theme'
-//import BackspaceIcon from 'svg/backspace_icon.svg'
+import { sanitizeValString, convert } from 'functions/calculator'
 import SwitchIcon from 'svg/switch_icon.svg'
 
 const buttons = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.']
@@ -268,38 +268,48 @@ const getStyles = props => {
 
 class Calculator extends Component {
   state = {
-    nanoPrice: 2.3,
     amountFiat: '0',
     amountNano: '0',
     editing: 'amountFiat'
   }
 
-  sanitizeNumber = val => {
-    val = '' + val
-    while (val.charAt(0) === '0') {
-      if (val.charAt(1) === '.') break
-      val = val.substr(1)
-    }
-    if (val.length <= 0) {
-      val = '0'
-    }
-    return val
+  calculate = valstring => {
+    const { editing } = this.state
+    const nanoPrice = this.props.currencyNanoPrice
+    // Sanitize
+    valstring = sanitizeValString(valstring)
+    // Parse to float
+    const val = parseFloat(valstring)
+    // Calculate - avoid parsing the valstring to float
+    // to preserve things like a trailing decimal
+    let amountNano = editing === 'amountNano' ? valstring : convert(val, 'nano', nanoPrice)
+    let amountFiat = editing === 'amountFiat' ? valstring : convert(val, 'fiat', nanoPrice)
+    // Back to string
+    amountNano += ''
+    amountFiat += ''
+    // Sanitize again
+    amountNano = sanitizeValString(amountNano)
+    amountFiat = sanitizeValString(amountFiat)
+    // Leave state update for the caller
+    return { amountNano, amountFiat }
   }
 
-  calculate = valstring => {
-    valstring = this.sanitizeNumber(valstring)
-    const val = parseFloat(valstring)
-    if (this.state.editing === 'amountFiat') {
-      return {
-        amountFiat: this.sanitizeNumber(valstring),
-        amountNano: this.sanitizeNumber(val / this.state.nanoPrice)
-      }
-    } else {
-      return {
-        amountFiat: this.sanitizeNumber(val * this.state.nanoPrice),
-        amountNano: this.sanitizeNumber(valstring)
-      }
-    }
+  formatNano = (nanoValString, trim = false) => {
+    const val = parseFloat(nanoValString)
+    const digits = new Intl.NumberFormat('en-US', { maximumFractionDigits: trim ? 5 : 20 }).format(
+      val
+    )
+    const decimal = nanoValString.charAt(nanoValString.length - 1) === '.' ? '.' : ''
+    return `${digits}${decimal} NANO`
+  }
+
+  formatFiat = (fiatValString, trim = false) => {
+    const val = parseFloat(fiatValString)
+    const digits = new Intl.NumberFormat('en-US', { maximumFractionDigits: trim ? 2 : 20 }).format(
+      val
+    )
+    const decimal = fiatValString.charAt(fiatValString.length - 1) === '.' ? '.' : ''
+    return `${this.props.currencySymbol}${digits}${decimal}`
   }
 
   getHandleKeypress = key => () => {
@@ -320,6 +330,20 @@ class Calculator extends Component {
     })
   }
 
+  handleSwitch = () => {
+    const editingBeforeSwitch = this.state.editing
+    // First update editing
+    this.setState(
+      {
+        editing: editingBeforeSwitch === 'amountNano' ? 'amountFiat' : 'amountNano'
+      },
+      // Then run calculate again using the editingBeforeSwitch value
+      () => {
+        this.setState(this.calculate(this.state[editingBeforeSwitch]))
+      }
+    )
+  }
+
   render() {
     const classes = getStyles(this.props)
 
@@ -329,10 +353,17 @@ class Calculator extends Component {
           <button className={classes.back} onClick={this.props.onBack}>
             <ArrowLeftIcon /> <span>Dashboard</span>
           </button>
-          <div className={classes.currs}>
-            <span className={classes.curr1}>{this.state.amountNano} NANO</span>
-            <span className={classes.curr2}>${this.state.amountFiat}</span>
-          </div>
+          {this.state.editing === 'amountNano' ? (
+            <div className={classes.currs}>
+              <span className={classes.curr1}>{this.formatFiat(this.state.amountFiat, true)}</span>
+              <span className={classes.curr2}>{this.formatNano(this.state.amountNano, false)}</span>
+            </div>
+          ) : (
+            <div className={classes.currs}>
+              <span className={classes.curr1}>{this.formatNano(this.state.amountNano, true)}</span>
+              <span className={classes.curr2}>{this.formatFiat(this.state.amountFiat, false)}</span>
+            </div>
+          )}
         </div>
         <div className={classes.pad}>
           {buttons.map(btn => (
@@ -351,7 +382,7 @@ class Calculator extends Component {
           <button className={classes.key_clear} onClick={this.handleClear}>
             <span className={classes.key_content}>Clear</span>
           </button>
-          <button className={classes.key_switch}>
+          <button className={classes.key_switch} onClick={this.handleSwitch}>
             <img className={classes.key_icon} src={SwitchIcon} alt="Switch" />
           </button>
           <button className={classes.key_pay}>

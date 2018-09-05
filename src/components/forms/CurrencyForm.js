@@ -4,7 +4,10 @@ import SelectField from 'components/forms/SelectField'
 import Button from 'components/button/Button'
 
 const CurrencyForm = props => {
-  const currencies = [{ value: 'USD', title: '$ USD' }, { value: 'AUD', title: '$ AUD' }]
+  const currencies = props.currencies.map(c => ({
+    value: c.code,
+    title: `${c.symbol} ${c.code}`
+  }))
   return (
     <Form>
       <FormField label="Select your currency" for="currency">

@@ -1,7 +1,5 @@
 import React from 'react'
 import { css } from 'react-emotion'
-import Color from 'color'
-import theme from 'theme'
 import { getStyles as getTextInputStyles } from 'components/forms/TextInput'
 
 const getStyles = (textInputStyles, props) => {
@@ -26,7 +24,7 @@ const SelectField = props => {
 
   return (
     <select className={classes.textinput} onChange={onChange} value={value} {...rest}>
-      {props.options.map(opt => (
+      {options.map(opt => (
         <option key={opt.value} value={opt.value}>
           {opt.title}
         </option>
