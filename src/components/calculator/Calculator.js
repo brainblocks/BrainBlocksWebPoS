@@ -9,6 +9,7 @@ import SwitchIcon from 'svg/switch_icon.svg'
 
 const buttons = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.']
 
+// Collapse me
 const getStyles = props => {
   const calculator = css``
   const display = css`
@@ -97,9 +98,16 @@ const getStyles = props => {
     @media (min-width: ${theme.bp.fullWidth}px) {
       font-size: 34px;
     }
+    @media (max-width: ${theme.bp.mobile}px) {
+      font-size: 22px;
+    }
     &:active,
     &:hover {
       background: ${theme.color.lightestgray};
+    }
+    &:disabled {
+      background: white;
+      color: #999;
     }
   `
   const key_right = css`
@@ -166,6 +174,7 @@ const getStyles = props => {
     left: 25%;
     span {
       font-size: 6vw;
+      line-height: 1;
     }
   `
   const key_backspace = css`
@@ -181,6 +190,9 @@ const getStyles = props => {
     font-size: 3vw;
     @media (min-width: ${theme.bp.fullWidth}px) {
       font-size: 30px;
+    }
+    @media (max-width: ${theme.bp.mobile}px) {
+      font-size: 16px;
     }
   `
   const key_switch = css`
@@ -206,6 +218,9 @@ const getStyles = props => {
     }
     @media (min-width: ${theme.bp.fullWidth}px) {
       font-size: 28px;
+    }
+    @media (max-width: ${theme.bp.mobile}px) {
+      font-size: 16px;
     }
   `
   const key_content = css`
@@ -253,8 +268,56 @@ const getStyles = props => {
 
 class Calculator extends Component {
   state = {
-    amountFiat: 0,
-    amountNano: 0
+    nanoPrice: 2.3,
+    amountFiat: '0',
+    amountNano: '0',
+    editing: 'amountFiat'
+  }
+
+  sanitizeNumber = val => {
+    val = '' + val
+    while (val.charAt(0) === '0') {
+      if (val.charAt(1) === '.') break
+      val = val.substr(1)
+    }
+    if (val.length <= 0) {
+      val = '0'
+    }
+    return val
+  }
+
+  calculate = valstring => {
+    valstring = this.sanitizeNumber(valstring)
+    const val = parseFloat(valstring)
+    if (this.state.editing === 'amountFiat') {
+      return {
+        amountFiat: this.sanitizeNumber(valstring),
+        amountNano: this.sanitizeNumber(val / this.state.nanoPrice)
+      }
+    } else {
+      return {
+        amountFiat: this.sanitizeNumber(val * this.state.nanoPrice),
+        amountNano: this.sanitizeNumber(valstring)
+      }
+    }
+  }
+
+  getHandleKeypress = key => () => {
+    const newAmount = this.state[this.state.editing] + key
+    this.setState(this.calculate(newAmount))
+  }
+
+  handleBackspace = () => {
+    const { editing } = this.state
+    const newAmount = this.state[editing].slice(0, -1)
+    this.setState(this.calculate(newAmount))
+  }
+
+  handleClear = () => {
+    this.setState({
+      amountFiat: '0',
+      amountNano: '0'
+    })
   }
 
   render() {
@@ -267,20 +330,25 @@ class Calculator extends Component {
             <ArrowLeftIcon /> <span>Dashboard</span>
           </button>
           <div className={classes.currs}>
-            <span className={classes.curr1}>123.4 NANO</span>
-            <span className={classes.curr2}>$205.70</span>
+            <span className={classes.curr1}>{this.state.amountNano} NANO</span>
+            <span className={classes.curr2}>${this.state.amountFiat}</span>
           </div>
         </div>
         <div className={classes.pad}>
           {buttons.map(btn => (
-            <button key={`key-${btn}`} className={classes[`key_${btn === '.' ? 'period' : btn}`]}>
+            <button
+              key={`key-${btn}`}
+              className={classes[`key_${btn === '.' ? 'period' : btn}`]}
+              onClick={this.getHandleKeypress(btn)}
+              disabled={btn === '.' && this.state[this.state.editing].indexOf('.') >= 0}
+            >
               <span className={classes.key_content}>{btn}</span>
             </button>
           ))}
-          <button className={classes.key_backspace}>
+          <button className={classes.key_backspace} onClick={this.handleBackspace}>
             <BackspaceIcon className={classes.key_icon} />
           </button>
-          <button className={classes.key_clear}>
+          <button className={classes.key_clear} onClick={this.handleClear}>
             <span className={classes.key_content}>Clear</span>
           </button>
           <button className={classes.key_switch}>
