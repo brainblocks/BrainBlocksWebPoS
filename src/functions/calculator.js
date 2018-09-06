@@ -14,6 +14,10 @@ export const sanitizeValString = valstring => {
   if (valstring.length <= 0) {
     valstring = '0'
   }
+  // add leading zero if first char is decimal
+  if (valstring.charAt(0) === '.') {
+    valstring = '0' + valstring
+  }
   return valstring
 }
 
@@ -24,6 +28,6 @@ export const sanitizeValString = valstring => {
  * @param {float} nanoPrice Current nano value
  */
 export const convert = (val, from, nanoPrice) => {
-  if (nanoPrice === 0) return 0
-  return from === 'nano' ? val / nanoPrice : val * nanoPrice
+  if (!nanoPrice) return 0
+  return from === 'nano' ? val * nanoPrice : val / nanoPrice
 }

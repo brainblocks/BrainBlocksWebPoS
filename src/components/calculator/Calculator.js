@@ -284,8 +284,8 @@ class Calculator extends Component {
     const val = parseFloat(valstring)
     // Calculate - avoid parsing the valstring to float
     // to preserve things like a trailing decimal
-    let amountNano = editing === 'amountNano' ? valstring : convert(val, 'nano', nanoPrice)
-    let amountFiat = editing === 'amountFiat' ? valstring : convert(val, 'fiat', nanoPrice)
+    let amountNano = editing === 'amountNano' ? valstring : convert(val, 'fiat', nanoPrice)
+    let amountFiat = editing === 'amountFiat' ? valstring : convert(val, 'nano', nanoPrice)
     // Back to string
     amountNano += ''
     amountFiat += ''
@@ -370,6 +370,7 @@ class Calculator extends Component {
         <div className={classes.pad}>
           {buttons.map(btn => (
             <button
+              id={`key-${btn}`}
               key={`key-${btn}`}
               className={classes[`key_${btn === '.' ? 'period' : btn}`]}
               onClick={this.getHandleKeypress(btn)}
@@ -378,16 +379,20 @@ class Calculator extends Component {
               <span className={classes.key_content}>{btn}</span>
             </button>
           ))}
-          <button className={classes.key_backspace} onClick={this.handleBackspace}>
+          <button
+            id={`key-backspace`}
+            className={classes.key_backspace}
+            onClick={this.handleBackspace}
+          >
             <BackspaceIcon className={classes.key_icon} />
           </button>
-          <button className={classes.key_clear} onClick={this.handleClear}>
+          <button id={`key-clear`} className={classes.key_clear} onClick={this.handleClear}>
             <span className={classes.key_content}>Clear</span>
           </button>
-          <button className={classes.key_switch} onClick={this.handleSwitch}>
+          <button id={`key-switch`} className={classes.key_switch} onClick={this.handleSwitch}>
             <img className={classes.key_icon} src={SwitchIcon} alt="Switch" />
           </button>
-          <button className={classes.key_pay}>
+          <button id={`key-pay`} className={classes.key_pay}>
             <span className={classes.key_content}>Pay</span>
           </button>
         </div>
