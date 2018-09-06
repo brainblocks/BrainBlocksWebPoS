@@ -14,7 +14,8 @@ const theme = {
     walletIcon: '#348b9f',
     currencyIcon: '#4a91e3',
     posIcon: '#5fb061',
-    fieldBorder: '#888888'
+    fieldBorder: '#888888',
+    tableBorder: '#e2e2e2'
   },
   spacing: {
     mobile: {

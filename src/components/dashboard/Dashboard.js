@@ -3,6 +3,7 @@ import { css } from 'react-emotion'
 import theme from 'theme'
 import SVGButton from 'components/svg-button/SVGButton'
 import BrainblocksPOSLogo from 'svg/brainblocks_pos_logo.svg'
+import TransactionsTable from 'components/transactions/TransactionsTable'
 
 const getStyles = props => {
   const dashboard = css`
@@ -33,9 +34,7 @@ const getStyles = props => {
     width: 28.32%;
   `
 
-  const transactions = css`
-    background: green;
-  `
+  const transactions = css``
   return { dashboard, header, buttons, button, transactions }
 }
 
@@ -74,7 +73,15 @@ const Dashboard = props => {
           />
         </div>
       </div>
-      <div className={classes.transactions}>Transactions</div>
+      <div className={classes.transactions}>
+        <TransactionsTable
+          currencies={props.currencies}
+          currencyCode={props.currencyCode}
+          currencySymbol={props.currencySymbol}
+          transactions={props.transactions}
+          onInspectTransaction={props.onInspectTransaction}
+        />
+      </div>
     </div>
   )
 }

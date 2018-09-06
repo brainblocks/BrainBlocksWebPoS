@@ -4,6 +4,7 @@ import Color from 'color'
 import ArrowLeftIcon from 'mdi-react/ArrowLeftIcon'
 import BackspaceIcon from 'mdi-react/BackspaceIcon'
 import theme from 'theme'
+import { formatNano, formatFiat } from 'functions/format'
 import { sanitizeValString, convert } from 'functions/calculator'
 import SwitchIcon from 'svg/switch_icon.svg'
 
@@ -302,24 +303,6 @@ class Calculator extends Component {
     return { amountNano, amountFiat }
   }
 
-  formatNano = (nanoValString, trim = false) => {
-    const val = parseFloat(nanoValString)
-    const digits = new Intl.NumberFormat('en-US', { maximumFractionDigits: trim ? 5 : 20 }).format(
-      val
-    )
-    const decimal = nanoValString.charAt(nanoValString.length - 1) === '.' ? '.' : ''
-    return `${digits}${decimal} NANO`
-  }
-
-  formatFiat = (fiatValString, trim = false) => {
-    const val = parseFloat(fiatValString)
-    const digits = new Intl.NumberFormat('en-US', { maximumFractionDigits: trim ? 2 : 20 }).format(
-      val
-    )
-    const decimal = fiatValString.charAt(fiatValString.length - 1) === '.' ? '.' : ''
-    return `${this.props.currencySymbol}${digits}${decimal}`
-  }
-
   getHandleKeypress = key => () => {
     const newAmount = this.state[this.state.editing] + key
     this.setState(this.calculate(newAmount))
@@ -363,13 +346,17 @@ class Calculator extends Component {
           </button>
           {this.state.editing === 'amountNano' ? (
             <div className={classes.currs}>
-              <span className={classes.curr1}>{this.formatFiat(this.state.amountFiat, true)}</span>
-              <span className={classes.curr2}>{this.formatNano(this.state.amountNano, false)}</span>
+              <span className={classes.curr1}>
+                {formatFiat(this.state.amountFiat, this.props.currencySymbol, true)}
+              </span>
+              <span className={classes.curr2}>{formatNano(this.state.amountNano, false)}</span>
             </div>
           ) : (
             <div className={classes.currs}>
-              <span className={classes.curr1}>{this.formatNano(this.state.amountNano, true)}</span>
-              <span className={classes.curr2}>{this.formatFiat(this.state.amountFiat, false)}</span>
+              <span className={classes.curr1}>{formatNano(this.state.amountNano, true)}</span>
+              <span className={classes.curr2}>
+                {formatFiat(this.state.amountFiat, this.props.currencySymbol, false)}
+              </span>
             </div>
           )}
         </div>

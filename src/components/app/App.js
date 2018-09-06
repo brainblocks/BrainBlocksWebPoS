@@ -7,24 +7,54 @@ import Calculator from 'components/calculator/Calculator'
 import Modal from 'components/modal/Modal'
 import AddressForm from 'components/forms/AddressForm'
 import CurrencyForm from 'components/forms/CurrencyForm'
+import TransactionInfo from 'components/transactions/TransactionInfo'
 
-const currencies = [
-  {
-    code: 'AUD',
-    symbol: '$',
-    nanoPrice: 4.18
-  },
-  {
-    code: 'USD',
-    symbol: '$',
-    nanoPrice: 3.4
-  },
-  {
-    code: 'CNY',
-    symbol: '¥',
-    nanoPrice: 21.02
-  }
-]
+const getCurrencies = () => {
+  const currencies = [
+    {
+      code: 'AUD',
+      symbol: '$',
+      nanoPrice: 4.18
+    },
+    {
+      code: 'USD',
+      symbol: '$',
+      nanoPrice: 3.4
+    },
+    {
+      code: 'CNY',
+      symbol: '¥',
+      nanoPrice: 21.02
+    }
+  ]
+  return Promise.resolve(currencies)
+}
+
+const getTransactions = () => {
+  const transactions = [
+    {
+      address: 'xrb_1nanode8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzffeg',
+      link: 'xrb_1matere8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzabcd',
+      type: 'receive',
+      nanoValue: 2.56,
+      raiValue: 2560000000000,
+      currency: 'AUD',
+      fiatValue: 11.327,
+      timestamp: 1536229581120
+    },
+    {
+      address: 'xrb_12345678ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzfade',
+      link: 'xrb_1biadi388ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzhijk',
+      type: 'receive',
+      nanoValue: 11.123456,
+      raiValue: 111234567890,
+      currency: 'CNY',
+      fiatValue: 45.87234,
+      timestamp: 1536229561120
+    }
+  ]
+  return Promise.resolve(transactions)
+}
 
 const getStyles = props => {
   return {
@@ -34,7 +64,7 @@ const getStyles = props => {
       max-height: ${theme.bp.fullHeight}px;
       box-shadow: 10px 10px 120px rgba(0, 0, 0, 0.2);
       margin: auto;
-      height: 100vh;
+      min-height: 100vh;
       width: 100%;
       position: relative;
       @media (min-height: ${theme.bp.fullHeight}px) {
@@ -57,13 +87,30 @@ class App extends Component {
     this.state = {
       address,
       currencyCode,
+      currencies: [],
+      transactions: [],
       openPanel: 'dashboard',
       openModal: '',
       addressFieldValue: address,
       currencyFieldValue: currencyCode,
       currencyNanoPrice: 0,
-      currencySymbol: '$'
+      currencySymbol: '$',
+      transactionModalIndex: 0
     }
+  }
+
+  componentDidMount = () => {
+    getCurrencies().then(currencies => {
+      const currency = currencies.find(c => c.code === this.state.currencyCode)
+      this.setState({
+        currencies,
+        currencyNanoPrice: currency.nanoPrice,
+        currencySymbol: currency.symbol
+      })
+    })
+    getTransactions().then(transactions => {
+      this.setState({ transactions })
+    })
   }
 
   isAddressFieldValid = () => {
@@ -96,8 +143,9 @@ class App extends Component {
     })
   }
 
-  handleSetCurrency = () => {
-    const currency = currencies.find(c => c.code === this.state.currencyFieldValue)
+  handleSetCurrency = code => {
+    code = code || this.state.currencyFieldValue
+    const currency = this.state.currencies.find(c => c.code === code)
     if (typeof currency === 'undefined') {
       throw new Error('Currency mismatch')
     }
@@ -122,6 +170,13 @@ class App extends Component {
     })
   }
 
+  handleInspectTransaction = txId => {
+    this.setState({
+      openModal: 'transaction',
+      transactionModalIndex: txId
+    })
+  }
+
   render() {
     const classes = getStyles(this.props)
 
@@ -130,13 +185,18 @@ class App extends Component {
         {this.state.openPanel === 'dashboard' && (
           <Fragment>
             <Dashboard
+              currencies={this.state.currencies}
+              transactions={this.state.transactions}
+              currencySymbol={this.state.currencySymbol}
+              currencyCode={this.state.currencyCode}
               posEnabled={isValidNanoAddress(this.state.address)}
               onOpenModal={this.handleOpenModal}
               onOpenPoS={this.getHandleSwitchPanel('pos')}
+              onInspectTransaction={this.handleInspectTransaction}
             />
             <Modal open={this.state.openModal === 'currency'} onClose={this.handleCloseModal}>
               <CurrencyForm
-                currencies={currencies}
+                currencies={this.state.currencies}
                 currencyFieldValue={this.state.currencyFieldValue}
                 onUpdateCurrency={this.handleUpdateCurrencyField}
                 onSaveCurrency={this.handleSetCurrency}
@@ -149,6 +209,13 @@ class App extends Component {
                 onUpdateAddress={this.handleUpdateAddressField}
                 onSaveAddress={this.handleSetAddress}
               />
+            </Modal>
+            <Modal open={this.state.openModal === 'transaction'} onClose={this.handleCloseModal}>
+              {this.state.transactions.length >= 1 && (
+                <TransactionInfo
+                  transaction={this.state.transactions[this.state.transactionModalIndex]}
+                />
+              )}
             </Modal>
           </Fragment>
         )}
