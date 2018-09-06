@@ -218,6 +218,12 @@ const getStyles = props => {
         .darken(0.15)
         .string()};
     }
+    &:disabled {
+      background: ${Color(theme.color.posIcon)
+        .lighten(0.25)
+        .string()};
+      color: #fff;
+    }
     @media (min-width: ${theme.bp.fullWidth}px) {
       font-size: 28px;
     }
@@ -383,16 +389,26 @@ class Calculator extends Component {
             id={`key-backspace`}
             className={classes.key_backspace}
             onClick={this.handleBackspace}
+            disabled={this.state[this.state.editing] === '0'}
           >
             <BackspaceIcon className={classes.key_icon} />
           </button>
-          <button id={`key-clear`} className={classes.key_clear} onClick={this.handleClear}>
+          <button
+            id={`key-clear`}
+            className={classes.key_clear}
+            onClick={this.handleClear}
+            disabled={this.state[this.state.editing] === '0'}
+          >
             <span className={classes.key_content}>Clear</span>
           </button>
           <button id={`key-switch`} className={classes.key_switch} onClick={this.handleSwitch}>
             <img className={classes.key_icon} src={SwitchIcon} alt="Switch" />
           </button>
-          <button id={`key-pay`} className={classes.key_pay}>
+          <button
+            id={`key-pay`}
+            className={classes.key_pay}
+            disabled={this.state[this.state.editing] === '0'}
+          >
             <span className={classes.key_content}>Pay</span>
           </button>
         </div>
