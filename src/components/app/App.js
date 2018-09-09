@@ -35,7 +35,7 @@ const getTransactions = () => {
     {
       address: 'xrb_1nanode8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzffeg',
       link: 'xrb_1matere8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzabcd',
-      type: 'receive',
+      type: 'send',
       nanoValue: 2.56,
       raiValue: 2560000000000,
       currency: 'AUD',
@@ -117,6 +117,15 @@ class App extends Component {
     return isValidNanoAddress(this.state.addressFieldValue)
   }
 
+  getCurrencySymbol = code => {
+    const currency = this.state.currencies.find(c => c.code === code)
+    if (currency && currency.hasOwnProperty('symbol')) {
+      return currency.symbol
+    } else {
+      return code + ' '
+    }
+  }
+
   getHandleSwitchPanel = panel => () => {
     this.setState({
       openPanel: panel
@@ -189,6 +198,7 @@ class App extends Component {
               transactions={this.state.transactions}
               currencySymbol={this.state.currencySymbol}
               currencyCode={this.state.currencyCode}
+              getCurrencySymbol={this.getCurrencySymbol}
               posEnabled={isValidNanoAddress(this.state.address)}
               onOpenModal={this.handleOpenModal}
               onOpenPoS={this.getHandleSwitchPanel('pos')}
@@ -214,6 +224,8 @@ class App extends Component {
               {this.state.transactions.length >= 1 && (
                 <TransactionInfo
                   transaction={this.state.transactions[this.state.transactionModalIndex]}
+                  currencyCode={this.state.currencyCode}
+                  getCurrencySymbol={this.getCurrencySymbol}
                 />
               )}
             </Modal>

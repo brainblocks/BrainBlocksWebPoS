@@ -80,6 +80,7 @@ const Dashboard = props => {
           currencySymbol={props.currencySymbol}
           transactions={props.transactions}
           onInspectTransaction={props.onInspectTransaction}
+          getCurrencySymbol={props.getCurrencySymbol}
         />
       </div>
     </div>

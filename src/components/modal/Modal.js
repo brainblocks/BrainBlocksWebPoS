@@ -7,7 +7,7 @@ const getStyles = props => {
   const modal = css`
     display: ${props.open ? 'block' : 'none'};
     position: absolute;
-    height: 60%;
+    min-height: 60%;
     top: 20%;
     background: #fff;
     box-shadow: 10px 10px 120px rgba(0, 0, 0, 0.2);
@@ -35,7 +35,7 @@ const getStyles = props => {
   `
 
   const content = css`
-    margin: 20% 5%;
+    margin: 12% 5%;
   `
 
   return { modal, closeButton, content }
