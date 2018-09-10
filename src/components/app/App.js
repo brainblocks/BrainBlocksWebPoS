@@ -4,6 +4,7 @@ import axios from 'axios'
 import config from 'config'
 import currencies from 'constants/currencies'
 import theme from 'theme'
+import { convert } from 'functions/calculator'
 import { isValidNanoAddress, raiToNano } from 'functions/nano'
 import Dashboard from 'components/dashboard/Dashboard'
 import Calculator from 'components/calculator/Calculator'
@@ -86,8 +87,7 @@ class App extends Component {
     axios
       .get(`${config.endpoints.getPrice}/${this.state.currencyCode}/1/rai`)
       .then(res => {
-        console.log(res.data.rai, raiToNano(res.data.rai))
-        this.setState({ currencyNanoPrice: raiToNano(res.data.rai) })
+        this.setState({ currencyNanoPrice: convert(1, 'fiat', raiToNano(res.data.rai)) })
       })
       .catch(e => {
         console.error("Couldn't get transactions", e)
@@ -177,6 +177,7 @@ class App extends Component {
           )}
           {this.state.openPanel === 'pos' && (
             <Calculator
+              address={this.state.address}
               currencyCode={this.state.currencyCode}
               currencyNanoPrice={this.state.currencyNanoPrice}
               onBack={this.getHandleSwitchPanel('dashboard')}

@@ -16,4 +16,8 @@ function raiToNano(rai) {
   return rai / 1000000
 }
 
-export { formatNano, isValidNanoAddress, raiToNano }
+function nanoToRai(nano) {
+  return nano * 1000000
+}
+
+export { formatNano, isValidNanoAddress, raiToNano, nanoToRai }

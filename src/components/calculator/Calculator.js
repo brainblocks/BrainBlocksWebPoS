@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import { css } from 'react-emotion'
 import Color from 'color'
+import OutsideClickHandler from 'react-outside-click-handler'
 import ArrowLeftIcon from 'mdi-react/ArrowLeftIcon'
 import BackspaceIcon from 'mdi-react/BackspaceIcon'
+import CloseIcon from 'mdi-react/CloseIcon'
 import theme from 'theme'
 import { formatNano, formatFiat } from 'functions/format'
 import { sanitizeValString, convert } from 'functions/calculator'
 import SwitchIcon from 'svg/switch_icon.svg'
+import BrainBlocksModule from 'components/brainblocks/BrainBlocksModule'
+import { nanoToRai } from '../../functions/nano'
 
 const buttons = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.']
 
@@ -262,6 +266,40 @@ const getStyles = props => {
     max-width: 50px;
     max-height: 40px;
   `
+  const paybackdrop = css`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.4);
+  `
+  const paymodule = css`
+    position: fixed;
+    z-index: 20;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  `
+  const closemodule = css`
+    position: absolute;
+    right: -40px;
+    top: 0;
+    border: none;
+    width: 30px;
+    height: 30px;
+    background: ${theme.color.text};
+    appearance: none;
+    border-radius: 100%;
+    line-height: 30px;
+    text-align: center;
+    color: #fff;
+    padding: 3px;
+    cursor: pointer;
+    &:hover {
+      background: ${theme.color.headings};
+    }
+  `
   return {
     calculator,
     display,
@@ -286,7 +324,10 @@ const getStyles = props => {
     key_switch,
     key_pay,
     key_content,
-    key_icon
+    key_icon,
+    paymodule,
+    paybackdrop,
+    closemodule
   }
 }
 
@@ -294,7 +335,8 @@ class Calculator extends Component {
   state = {
     amountFiat: '0',
     amountNano: '0',
-    editing: 'amountFiat'
+    editing: 'amountFiat',
+    isPaying: false
   }
 
   calculate = valstring => {
@@ -350,8 +392,31 @@ class Calculator extends Component {
     )
   }
 
+  handlePay = () => {
+    this.setState({
+      isPaying: true
+    })
+  }
+
+  handleCloseModule = () => {
+    this.setState({ isPaying: false })
+  }
+
+  handlePaymentCompleted = data => {
+    console.log('Payment successful!', data.token)
+    setTimeout(this.handleCloseModule, 3000)
+  }
+
   render() {
     const classes = getStyles(this.props)
+    const moduleProps = {}
+    if (this.state.editing === 'amountNano') {
+      moduleProps.currency = 'rai'
+      moduleProps.amount = nanoToRai(this.state.amountNano)
+    } else {
+      moduleProps.currency = this.props.currencyCode
+      moduleProps.amount = this.state.amountFiat
+    }
 
     return (
       <div className={classes.calculator}>
@@ -362,13 +427,13 @@ class Calculator extends Component {
           {this.state.editing === 'amountNano' ? (
             <div className={classes.currs}>
               <span className={classes.curr1}>
-                {formatFiat(this.state.amountFiat, this.props.currencyCode, true)}
+                ~ {formatFiat(this.state.amountFiat, this.props.currencyCode, true)}
               </span>
               <span className={classes.curr2}>{formatNano(this.state.amountNano, false)}</span>
             </div>
           ) : (
             <div className={classes.currs}>
-              <span className={classes.curr1}>{formatNano(this.state.amountNano, true)}</span>
+              <span className={classes.curr1}>~ {formatNano(this.state.amountNano, true)}</span>
               <span className={classes.curr2}>
                 {formatFiat(this.state.amountFiat, this.props.currencyCode, false)}
               </span>
@@ -409,11 +474,28 @@ class Calculator extends Component {
           <button
             id={`key-pay`}
             className={classes.key_pay}
+            onClick={this.handlePay}
             disabled={this.state[this.state.editing] === '0'}
           >
             <span className={classes.key_content}>Pay</span>
           </button>
         </div>
+        {this.state.isPaying && (
+          <div className={classes.paybackdrop}>
+            <OutsideClickHandler onOutsideClick={this.handleCloseModule}>
+              <div className={classes.paymodule}>
+                <button className={classes.closemodule} onClick={this.handleCloseModule}>
+                  <CloseIcon />
+                </button>
+                <BrainBlocksModule
+                  onPayment={this.handlePaymentCompleted}
+                  address={this.props.address}
+                  {...moduleProps}
+                />
+              </div>
+            </OutsideClickHandler>
+          </div>
+        )}
       </div>
     )
   }
