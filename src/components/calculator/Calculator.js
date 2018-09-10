@@ -13,6 +13,12 @@ const buttons = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.']
 // Collapse me
 const getStyles = props => {
   const calculator = css``
+  const displayGradientLight = Color(theme.color.currencyIcon)
+    .lighten(0.15)
+    .string()
+  const displayGradientDark = Color(theme.color.currencyIcon)
+    .darken(0.1)
+    .string()
   const display = css`
     position: absolute;
     top: 0;
@@ -20,6 +26,7 @@ const getStyles = props => {
     right: 0;
     height: 25%;
     background: ${theme.color.currencyIcon};
+    background: linear-gradient(135deg, ${displayGradientLight} 0%, ${displayGradientDark} 100%);
   `
   const back = css`
     cursor: pointer;
@@ -181,7 +188,7 @@ const getStyles = props => {
     ${key};
     top: 0%;
     ${key_right};
-    color: ${theme.color.text};
+    color: ${theme.color.headings};
   `
   const key_clear = css`
     ${key};
@@ -200,12 +207,19 @@ const getStyles = props => {
     top: 50%;
     ${key_right};
   `
+  const payGradientLight = Color(theme.color.posIcon)
+    .lighten(0.15)
+    .string()
+  const payGradientDark = Color(theme.color.posIcon)
+    .darken(0.1)
+    .string()
   const key_pay = css`
     ${key};
     top: 75%;
     left: 50%;
     width: 50%;
     background: ${theme.color.posIcon};
+    background: linear-gradient(135deg, ${payGradientLight} 0%, ${payGradientDark} 100%);
     color: #fff;
     font-weight: bold;
     letter-spacing: 0;

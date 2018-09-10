@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { ThemeProvider } from 'emotion-theming'
+import 'airbnb-browser-shims'
 import theme from 'theme'
 import App from 'components/app/App'
 //import registerServiceWorker from './registerServiceWorker'

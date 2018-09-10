@@ -1,7 +1,8 @@
 import React from 'react'
 import { css } from 'react-emotion'
+import Color from 'color'
 import theme from 'theme'
-import { formatNano, formatFiat } from 'functions/format'
+import { formatNano, formatFiat, formatTime, formatDate } from 'functions/format'
 import ArrowDownIcon from 'mdi-react/ArrowDownIcon'
 import ArrowUpIcon from 'mdi-react/ArrowUpIcon'
 
@@ -34,6 +35,7 @@ const getStyles = props => {
     color: ${theme.color.error};
   `
   const amountNano = css`
+    color: ${theme.color.headings};
     display: block;
     font-size: 36px;
     font-weight: 600;
@@ -43,7 +45,6 @@ const getStyles = props => {
     display: block;
     font-size: 20px;
     font-weight: 600;
-    color: #7f7f7f;
     line-height: 1.2;
   `
   const table = css`
@@ -79,6 +80,9 @@ const getStyles = props => {
     ${tdVal};
     ${tdFirst};
   `
+  const date = css`
+    font-weight: 600;
+  `
   const tdAddr = css`
     ${tdVal};
     font-size: 14px;
@@ -89,6 +93,17 @@ const getStyles = props => {
   `
   const tdExp = css`
     ${tdVal};
+  `
+  const link = css`
+    color: ${theme.color.currencyIcon};
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    &:hover {
+      color: ${Color(theme.color.currencyIcon)
+        .darken(0.2)
+        .string()};
+    }
   `
   return {
     wrap,
@@ -101,8 +116,10 @@ const getStyles = props => {
     th,
     thFirst,
     tdDate,
+    date,
     tdAddr,
-    tdExp
+    tdExp,
+    link
   }
 }
 
@@ -132,7 +149,10 @@ const TransactionInfo = props => {
         <tbody>
           <tr>
             <th className={classes.thFirst}>Date</th>
-            <td className={classes.tdDate}>{tx.timestamp}</td>
+            <td className={classes.tdDate}>
+              {formatTime(tx.timestamp)}{' '}
+              <span className={classes.date}>{formatDate(tx.timestamp)}</span>
+            </td>
           </tr>
           <tr>
             <th className={classes.th}>Address</th>
@@ -141,7 +161,21 @@ const TransactionInfo = props => {
           <tr>
             <th className={classes.th}>Explorer</th>
             <td className={classes.tdExp}>
-              <a href="#">Address</a> / <a href="#">Transaction</a>
+              <a
+                className={classes.link}
+                href={`https://www.nanode.co/account/${tx.link}`}
+                target="_blank"
+              >
+                Address
+              </a>{' '}
+              /{' '}
+              <a
+                className={classes.link}
+                href={`https://www.nanode.co/block/${tx.block}`}
+                target="_blank"
+              >
+                Transaction
+              </a>
             </td>
           </tr>
         </tbody>

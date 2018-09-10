@@ -1,5 +1,6 @@
 import React from 'react'
 import { css } from 'react-emotion'
+import Color from 'color'
 import theme from 'theme'
 import CalculatorIcon from 'svg/calculator_icon.svg'
 import CashIcon from 'svg/cash_icon.svg'
@@ -27,12 +28,15 @@ const getStyles = props => {
         }
       `};
   `
-
+  const lightColor = Color(props.color)
+    .lighten(0.15)
+    .string()
   const button = css`
     padding: 10px;
     display: block;
     width: 100%;
     background: ${props.color};
+    background: linear-gradient(135deg, ${lightColor} 0%, ${props.color} 100%);
     border-radius: 15px;
     height: 0;
     padding-top: 77.4%;
@@ -58,7 +62,7 @@ const getStyles = props => {
   `
 
   const caption = css`
-    color: ${theme.color.text};
+    color: ${theme.color.headings};
     display: block;
     text-align: center;
     padding: 10px 0;

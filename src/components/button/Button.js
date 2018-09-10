@@ -35,6 +35,7 @@ const getStyles = props => {
   `
 
   const button = css`
+    display: inline-block;
     color: #fff;
     font-size: 17px;
     border-radius: 5px;

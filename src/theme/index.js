@@ -2,11 +2,12 @@ import { injectGlobal } from 'emotion'
 
 const theme = {
   color: {
-    text: '#555555',
+    text: '#7f7f7f',
+    headings: '#555555',
     primary: '',
     secondary: '',
     error: '#c91c1c',
-    success: '#38a52d',
+    success: '#5fb061',
     lightestgray: '#ececec',
     buttonPrimary: '#7cca7e',
     buttonSecondary: '#b4b4b4',
@@ -19,13 +20,13 @@ const theme = {
   },
   spacing: {
     mobile: {
-      dashPadding: '20px'
+      dashPadding: 20
     },
     tablet: {
-      dashPadding: '44px'
+      dashPadding: 44
     },
     desktop: {
-      dashPadding: '100px'
+      dashPadding: 100
     }
   },
   bp: {
@@ -52,6 +53,9 @@ injectGlobal`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  h1, h2, h3, h4, h5, h6 {
+    color: ${theme.color.headings};
+  }
   button {
     color: ${theme.color.text};
     font-family: "Montserrat", sans-serif;
@@ -59,6 +63,15 @@ injectGlobal`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
 `
 
 export default theme

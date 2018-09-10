@@ -7,12 +7,12 @@ import TransactionsTable from 'components/transactions/TransactionsTable'
 
 const getStyles = props => {
   const dashboard = css`
-    padding: ${theme.spacing.mobile.dashPadding};
+    padding: ${theme.spacing.mobile.dashPadding}px;
     @media (min-width: ${theme.bp.tablet}px) {
-      padding: ${theme.spacing.tablet.dashPadding};
+      padding: ${theme.spacing.tablet.dashPadding}px;
     }
     @media (min-width: ${theme.bp.desktop}px) {
-      padding: ${theme.spacing.desktop.dashPadding};
+      padding: ${theme.spacing.desktop.dashPadding}px;
     }
   `
 
@@ -78,9 +78,11 @@ const Dashboard = props => {
           currencies={props.currencies}
           currencyCode={props.currencyCode}
           currencySymbol={props.currencySymbol}
-          transactions={props.transactions}
+          transactions={props.transactions.slice(0, 4)}
           onInspectTransaction={props.onInspectTransaction}
           getCurrencySymbol={props.getCurrencySymbol}
+          txRequestStatus={props.txRequestStatus}
+          onGetTransactions={props.onGetTransactions}
         />
       </div>
     </div>

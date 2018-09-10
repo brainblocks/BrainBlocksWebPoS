@@ -19,7 +19,7 @@ const CurrencyForm = props => {
           style={{ fontSize: 30, padding: '0.5em 2em 0.5em 1em' }}
         />
       </FormField>
-      <Button onClick={props.onSaveCurrency}>Save</Button>
+      <Button onClick={() => props.onSaveCurrency()}>Save</Button>
     </Form>
   )
 }

@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "airbnb-browser-shims": "^3.0.0",
     "axios": "^0.18.0",
     "color": "^3.0.0",
     "emotion": "^9.2.8",
     "emotion-theming": "^9.2.6",
     "mdi-react": "^4.3.0",
+    "moment": "^2.22.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-emotion": "^9.2.8",
+    "react-outside-click-handler": "^1.2.2",
     "react-scripts": "1.1.5"
   },
   "scripts": {

@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 function formatNano(nanoVal, trim = false) {
   const nanoValString = nanoVal + ''
   const val = parseFloat(nanoValString)
@@ -18,4 +20,16 @@ function formatFiat(fiatVal, currencySymbol, trim = false) {
   return `${currencySymbol}${digits}${decimal}`
 }
 
-export { formatNano, formatFiat }
+function formatTimeAgo(timestamp, shorten = false) {
+  return moment(timestamp).fromNow(shorten)
+}
+
+function formatTime(timestamp) {
+  return moment(timestamp).format('LT')
+}
+
+function formatDate(timestamp) {
+  return moment(timestamp).format('ll')
+}
+
+export { formatNano, formatFiat, formatTimeAgo, formatTime, formatDate }

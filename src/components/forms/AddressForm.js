@@ -17,18 +17,12 @@ const AddressForm = props => {
       <Button
         disabled={!props.addressFieldValid}
         onClick={props.onSaveAddress}
-        style={{ marginRight: '0.5em' }}
+        style={{ marginBottom: 5 }}
       >
         Save
-      </Button>{' '}
-      or{' '}
-      <Button
-        type="secondary"
-        el="a"
-        href="https://nanowallet.io"
-        target="_blank"
-        style={{ marginLeft: '0.5em' }}
-      >
+      </Button>
+      <span style={{ display: 'inline-block', margin: '0 0.5em' }}>or</span>
+      <Button type="secondary" el="a" href="https://nanowallet.io" target="_blank">
         Create New Wallet
       </Button>
     </Form>

@@ -1,25 +1,33 @@
 import React from 'react'
 import { css } from 'react-emotion'
+import OutsideClickHandler from 'react-outside-click-handler'
 import CloseIcon from 'mdi-react/CloseIcon'
 import theme from 'theme'
 
 const getStyles = props => {
   const modal = css`
-    display: ${props.open ? 'block' : 'none'};
-    position: absolute;
-    min-height: 60%;
-    top: 20%;
+    position: fixed;
     background: #fff;
     box-shadow: 10px 10px 120px rgba(0, 0, 0, 0.2);
-    left: ${theme.spacing.mobile.dashPadding};
-    right: ${theme.spacing.mobile.dashPadding};
+    /* Sizing */
+    top: 70px;
+    left: ${theme.spacing.mobile.dashPadding}px;
+    right: ${theme.spacing.mobile.dashPadding}px;
+    height: calc(100vh - 70px - 20px);
     @media (min-width: ${theme.bp.tablet}px) {
-      left: ${theme.spacing.tablet.dashPadding};
-      right: ${theme.spacing.tablet.dashPadding};
+      top: 130px;
+      left: ${theme.spacing.tablet.dashPadding}px;
+      right: ${theme.spacing.tablet.dashPadding}px;
+      height: calc(100vh - 130px - 30px);
     }
     @media (min-width: ${theme.bp.desktop}px) {
-      left: ${theme.spacing.desktop.dashPadding};
-      right: ${theme.spacing.desktop.dashPadding};
+      top: 50%;
+      left: 50%;
+      right: auto;
+      width: ${theme.bp.fullWidth - theme.spacing.desktop.dashPadding * 2}px;
+      transform: translate(-50%, -50%);
+      height: 90vh;
+      max-height: ${theme.bp.fullHeight - theme.spacing.desktop.dashPadding * 2}px;
     }
   `
 
@@ -34,11 +42,23 @@ const getStyles = props => {
     }
   `
 
-  const content = css`
-    margin: 12% 5%;
+  const scrollable = css`
+    position: absolute;
+    top: 15%;
+    left: 5px;
+    right: 5px;
+    bottom: 7.5%;
+    overflow: auto;
+    @media (min-height: 600px) {
+      top: 20%;
+    }
   `
 
-  return { modal, closeButton, content }
+  const content = css`
+    padding: 5px 5%;
+  `
+
+  return { modal, closeButton, scrollable, content }
 }
 
 const Modal = props => {
@@ -46,10 +66,14 @@ const Modal = props => {
   const { open, children, onClose, ...rest } = props
 
   return (
-    <div className={classes.modal} {...rest}>
-      <CloseIcon className={classes.closeButton} onClick={onClose} size={30} />
-      <div className={classes.content}>{children}</div>
-    </div>
+    <OutsideClickHandler onOutsideClick={onClose}>
+      <div className={classes.modal} {...rest}>
+        <CloseIcon className={classes.closeButton} onClick={onClose} size={30} />
+        <div className={classes.scrollable}>
+          <div className={classes.content}>{children}</div>
+        </div>
+      </div>
+    </OutsideClickHandler>
   )
 }
 

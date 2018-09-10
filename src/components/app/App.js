@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { css } from 'react-emotion'
+import axios from 'axios'
+import config from 'config'
 import theme from 'theme'
 import { isValidNanoAddress } from 'functions/nano'
 import Dashboard from 'components/dashboard/Dashboard'
@@ -30,44 +32,19 @@ const getCurrencies = () => {
   return Promise.resolve(currencies)
 }
 
-const getTransactions = () => {
-  const transactions = [
-    {
-      address: 'xrb_1nanode8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzffeg',
-      link: 'xrb_1matere8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzabcd',
-      type: 'send',
-      nanoValue: 2.56,
-      raiValue: 2560000000000,
-      currency: 'AUD',
-      fiatValue: 11.327,
-      timestamp: 1536229581120
-    },
-    {
-      address: 'xrb_12345678ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzfade',
-      link: 'xrb_1biadi388ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzhijk',
-      type: 'receive',
-      nanoValue: 11.123456,
-      raiValue: 111234567890,
-      currency: 'CNY',
-      fiatValue: 45.87234,
-      timestamp: 1536229561120
-    }
-  ]
-  return Promise.resolve(transactions)
-}
-
 const getStyles = props => {
   return {
     container: css`
       background: white;
+      min-height: 100vh;
       max-width: ${theme.bp.fullWidth}px;
       max-height: ${theme.bp.fullHeight}px;
       box-shadow: 10px 10px 120px rgba(0, 0, 0, 0.2);
       margin: auto;
-      min-height: 100vh;
       width: 100%;
       position: relative;
       @media (min-height: ${theme.bp.fullHeight}px) {
+        min-height: ${theme.bp.fullHeight}px;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -89,6 +66,7 @@ class App extends Component {
       currencyCode,
       currencies: [],
       transactions: [],
+      txRequestStatus: 'waiting',
       openPanel: 'dashboard',
       openModal: '',
       addressFieldValue: address,
@@ -108,8 +86,27 @@ class App extends Component {
         currencySymbol: currency.symbol
       })
     })
-    getTransactions().then(transactions => {
-      this.setState({ transactions })
+    this.getTransactions()
+    this.refresher = setInterval(() => {
+      this.getTransactions()
+    }, 30000)
+  }
+
+  componentWillUnmount = () => {
+    clearInterval(this.refresher)
+  }
+
+  getTransactions = () => {
+    this.setState({ txRequestStatus: 'waiting' }, () => {
+      axios
+        .get(config.endpoints.getTransactions)
+        .then(res => {
+          this.setState({ transactions: res.data.transactions, txRequestStatus: 'failed' })
+        })
+        .catch(e => {
+          console.error("Couldn't get transactions", e)
+          this.setState({ txRequestStatus: 'failed' })
+        })
     })
   }
 
@@ -190,9 +187,9 @@ class App extends Component {
     const classes = getStyles(this.props)
 
     return (
-      <div className={classes.container}>
-        {this.state.openPanel === 'dashboard' && (
-          <Fragment>
+      <Fragment>
+        <div className={classes.container}>
+          {this.state.openPanel === 'dashboard' && (
             <Dashboard
               currencies={this.state.currencies}
               transactions={this.state.transactions}
@@ -203,43 +200,51 @@ class App extends Component {
               onOpenModal={this.handleOpenModal}
               onOpenPoS={this.getHandleSwitchPanel('pos')}
               onInspectTransaction={this.handleInspectTransaction}
+              txRequestStatus={this.state.txRequestStatus}
+              onGetTransactions={this.getTransactions}
             />
-            <Modal open={this.state.openModal === 'currency'} onClose={this.handleCloseModal}>
-              <CurrencyForm
-                currencies={this.state.currencies}
-                currencyFieldValue={this.state.currencyFieldValue}
-                onUpdateCurrency={this.handleUpdateCurrencyField}
-                onSaveCurrency={this.handleSetCurrency}
-              />
-            </Modal>
-            <Modal open={this.state.openModal === 'address'} onClose={this.handleCloseModal}>
-              <AddressForm
-                addressFieldValue={this.state.addressFieldValue}
-                addressFieldValid={this.isAddressFieldValid()}
-                onUpdateAddress={this.handleUpdateAddressField}
-                onSaveAddress={this.handleSetAddress}
-              />
-            </Modal>
-            <Modal open={this.state.openModal === 'transaction'} onClose={this.handleCloseModal}>
-              {this.state.transactions.length >= 1 && (
-                <TransactionInfo
-                  transaction={this.state.transactions[this.state.transactionModalIndex]}
-                  currencyCode={this.state.currencyCode}
-                  getCurrencySymbol={this.getCurrencySymbol}
-                />
-              )}
-            </Modal>
-          </Fragment>
+          )}
+          {this.state.openPanel === 'pos' && (
+            <Calculator
+              currencyCode={this.state.currencyCode}
+              currencySymbol={this.state.currencySymbol}
+              currencyNanoPrice={this.state.currencyNanoPrice}
+              onBack={this.getHandleSwitchPanel('dashboard')}
+            />
+          )}
+        </div>
+        {this.state.openModal === 'currency' && (
+          <Modal onClose={this.handleCloseModal}>
+            <CurrencyForm
+              currencies={this.state.currencies}
+              currencyFieldValue={this.state.currencyFieldValue}
+              onUpdateCurrency={this.handleUpdateCurrencyField}
+              onSaveCurrency={this.handleSetCurrency}
+            />
+          </Modal>
         )}
-        {this.state.openPanel === 'pos' && (
-          <Calculator
-            currencyCode={this.state.currencyCode}
-            currencySymbol={this.state.currencySymbol}
-            currencyNanoPrice={this.state.currencyNanoPrice}
-            onBack={this.getHandleSwitchPanel('dashboard')}
-          />
+        {this.state.openModal === 'address' && (
+          <Modal onClose={this.handleCloseModal}>
+            <AddressForm
+              addressFieldValue={this.state.addressFieldValue}
+              addressFieldValid={this.isAddressFieldValid()}
+              onUpdateAddress={this.handleUpdateAddressField}
+              onSaveAddress={this.handleSetAddress}
+            />
+          </Modal>
         )}
-      </div>
+        {this.state.openModal === 'transaction' && (
+          <Modal onClose={this.handleCloseModal}>
+            {this.state.transactions.length >= 1 && (
+              <TransactionInfo
+                transaction={this.state.transactions[this.state.transactionModalIndex]}
+                currencyCode={this.state.currencyCode}
+                getCurrencySymbol={this.getCurrencySymbol}
+              />
+            )}
+          </Modal>
+        )}
+      </Fragment>
     )
   }
 }

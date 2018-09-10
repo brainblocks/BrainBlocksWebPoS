@@ -1,10 +1,12 @@
 import React from 'react'
 import { css } from 'react-emotion'
+import Color from 'color'
 import theme from 'theme'
-import { formatNano, formatFiat } from 'functions/format'
+import { formatNano, formatFiat, formatTimeAgo } from 'functions/format'
 import ArrowDownIcon from 'mdi-react/ArrowDownIcon'
 import ArrowUpIcon from 'mdi-react/ArrowUpIcon'
 import MoreIcon from 'mdi-react/MoreHorizIcon'
+import LoadingIcon from 'mdi-react/LoadingIcon'
 
 const getStyles = props => {
   const wrap = css``
@@ -14,6 +16,12 @@ const getStyles = props => {
     @media (max-width: ${theme.bp.tablet}px) {
       font-size: 19px;
     }
+  `
+  const loading = css`
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 0.5em;
+    animation: rotate 1s linear infinite;
   `
   const table = css`
     width: 100%;
@@ -27,8 +35,8 @@ const getStyles = props => {
     padding: 0.66em 0.75em;
     letter-spacing: -0.01em;
     border-bottom: 1px solid ${theme.color.tableBorder};
-    @media (max-width: ${theme.bp.tablet}px) {
-      font-size: 16px;
+    @media (max-width: ${theme.bp.mobile}px) {
+      font-size: 14px;
     }
   `
   const th = css`
@@ -116,10 +124,27 @@ const getStyles = props => {
   const info = css`
     ${td};
     ${tdHideTablet};
+    cursor: pointer;
+  `
+  const failed = css`
+    text-align: center;
+    margin: 30px;
+  `
+  const retry = css`
+    color: ${theme.color.currencyIcon};
+    cursor: pointer;
+    transition: color 0.2s ease;
+    font-weight: 600;
+    &:hover {
+      color: ${Color(theme.color.currencyIcon)
+        .darken(0.2)
+        .string()};
+    }
   `
   return {
     wrap,
     title,
+    loading,
     table,
     thType,
     thTime,
@@ -132,7 +157,9 @@ const getStyles = props => {
     timestamp,
     nanoval,
     fiatval,
-    info
+    info,
+    failed,
+    retry
   }
 }
 
@@ -141,7 +168,10 @@ const TransactionsTable = props => {
 
   return (
     <div className={classes.wrap}>
-      <h2 className={classes.title}>Recent Transactions</h2>
+      <h2 className={classes.title}>
+        Recent Transactions{' '}
+        {props.txRequestStatus === 'waiting' && <LoadingIcon className={classes.loading} />}
+      </h2>
       <table className={classes.table}>
         <thead>
           <tr>
@@ -170,7 +200,7 @@ const TransactionsTable = props => {
                   </div>
                 )}
               </td>
-              <td className={classes.timestamp}>{tx.timestamp}</td>
+              <td className={classes.timestamp}>{formatTimeAgo(tx.timestamp, false)}</td>
               <td className={classes.nanoval}>{formatNano(tx.nanoValue, true)}</td>
               <td className={classes.fiatval}>
                 {tx.currency !== props.currencyCode && `${tx.currency} `}
@@ -183,6 +213,17 @@ const TransactionsTable = props => {
           ))}
         </tbody>
       </table>
+      {props.txRequestStatus === 'failed' &&
+        props.transactions.length === 0 && (
+          <div className={classes.failed}>
+            <span>
+              Couldn't get transactions.{' '}
+              <span className={classes.retry} onClick={props.onGetTransactions}>
+                Retry
+              </span>
+            </span>
+          </div>
+        )}
     </div>
   )
 }
