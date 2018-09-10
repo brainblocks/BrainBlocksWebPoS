@@ -6,8 +6,13 @@ function formatNano(nanoVal, trim = false) {
   const digits = new Intl.NumberFormat('en-US', { maximumFractionDigits: trim ? 5 : 20 }).format(
     val
   )
-  const decimal = nanoValString.charAt(nanoValString.length - 1) === '.' ? '.' : ''
-  return `${digits}${decimal} NANO`
+  if (trim || nanoValString.indexOf('.') === -1) {
+    return `${digits} NANO`
+  } else {
+    const decimals = nanoValString.split('.')[1]
+    const digitsIntNotRounded = digits.split('.')[0]
+    return `${digitsIntNotRounded}.${decimals} NANO`
+  }
 }
 
 function formatFiatOld(fiatVal, currencySymbol, trim = false) {
@@ -21,12 +26,24 @@ function formatFiatOld(fiatVal, currencySymbol, trim = false) {
 }
 
 function formatFiat(fiatVal, currencyCode, trim = false) {
-  const val = parseFloat(fiatVal)
-  return new Intl.NumberFormat('en-US', {
+  const fiatValString = fiatVal + ''
+  const val = parseFloat(fiatValString)
+  const digits = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currencyCode.toUpperCase(),
     maximumFractionDigits: trim ? 2 : 20
   }).format(val)
+  if (trim) {
+    return digits
+  } else {
+    const digitsIntNotRounded = digits.split('.')[0]
+    if (fiatValString.indexOf('.') >= 0) {
+      const decimals = fiatValString.split('.')[1]
+      return `${digitsIntNotRounded}.${decimals}`
+    } else {
+      return `${digitsIntNotRounded}`
+    }
+  }
 }
 
 function formatTimeAgo(timestamp, shorten = false) {
