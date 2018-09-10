@@ -202,10 +202,7 @@ const TransactionsTable = props => {
               </td>
               <td className={classes.timestamp}>{formatTimeAgo(tx.timestamp, false)}</td>
               <td className={classes.nanoval}>{formatNano(tx.nanoValue, true)}</td>
-              <td className={classes.fiatval}>
-                {tx.currency !== props.currencyCode && `${tx.currency} `}
-                {formatFiat(tx.fiatValue, props.getCurrencySymbol(tx.currency), true)}
-              </td>
+              <td className={classes.fiatval}>{formatFiat(tx.fiatValue, tx.currency, true)}</td>
               <td className={classes.info}>
                 <MoreIcon />
               </td>

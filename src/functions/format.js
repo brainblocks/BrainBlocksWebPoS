@@ -10,7 +10,7 @@ function formatNano(nanoVal, trim = false) {
   return `${digits}${decimal} NANO`
 }
 
-function formatFiat(fiatVal, currencySymbol, trim = false) {
+function formatFiatOld(fiatVal, currencySymbol, trim = false) {
   const fiatValString = fiatVal + ''
   const val = parseFloat(fiatValString)
   const digits = new Intl.NumberFormat('en-US', { maximumFractionDigits: trim ? 2 : 20 }).format(
@@ -18,6 +18,15 @@ function formatFiat(fiatVal, currencySymbol, trim = false) {
   )
   const decimal = fiatValString.charAt(fiatValString.length - 1) === '.' ? '.' : ''
   return `${currencySymbol}${digits}${decimal}`
+}
+
+function formatFiat(fiatVal, currencyCode, trim = false) {
+  const val = parseFloat(fiatVal)
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currencyCode.toUpperCase(),
+    maximumFractionDigits: trim ? 2 : 20
+  }).format(val)
 }
 
 function formatTimeAgo(timestamp, shorten = false) {

@@ -1,12 +1,13 @@
 import React from 'react'
+import getSymbolFromCurrency from 'currency-symbol-map'
 import { Form, FormField } from 'components/forms/Form'
 import SelectField from 'components/forms/SelectField'
 import Button from 'components/button/Button'
 
 const CurrencyForm = props => {
   const currencies = props.currencies.map(c => ({
-    value: c.code,
-    title: `${c.symbol} ${c.code}`
+    value: c,
+    title: `${c.toUpperCase()} ${getSymbolFromCurrency(c.toUpperCase())}`
   }))
   return (
     <Form>

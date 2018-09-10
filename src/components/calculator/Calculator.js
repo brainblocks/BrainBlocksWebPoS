@@ -113,6 +113,7 @@ const getStyles = props => {
       background: ${theme.color.lightestgray};
     }
     &:disabled {
+      cursor: default;
       background: white;
       color: #999;
     }
@@ -361,7 +362,7 @@ class Calculator extends Component {
           {this.state.editing === 'amountNano' ? (
             <div className={classes.currs}>
               <span className={classes.curr1}>
-                {formatFiat(this.state.amountFiat, this.props.currencySymbol, true)}
+                {formatFiat(this.state.amountFiat, this.props.currencyCode, true)}
               </span>
               <span className={classes.curr2}>{formatNano(this.state.amountNano, false)}</span>
             </div>
@@ -369,7 +370,7 @@ class Calculator extends Component {
             <div className={classes.currs}>
               <span className={classes.curr1}>{formatNano(this.state.amountNano, true)}</span>
               <span className={classes.curr2}>
-                {formatFiat(this.state.amountFiat, this.props.currencySymbol, false)}
+                {formatFiat(this.state.amountFiat, this.props.currencyCode, false)}
               </span>
             </div>
           )}

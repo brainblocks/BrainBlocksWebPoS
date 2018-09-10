@@ -12,4 +12,8 @@ function isValidNanoAddress(address) {
   return re.test(address)
 }
 
-export { formatNano, isValidNanoAddress }
+function raiToNano(rai) {
+  return rai / 1000000
+}
+
+export { formatNano, isValidNanoAddress, raiToNano }

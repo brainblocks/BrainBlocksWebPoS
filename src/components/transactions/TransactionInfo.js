@@ -142,7 +142,7 @@ const TransactionInfo = props => {
         <span className={classes.amountNano}>{formatNano(tx.nanoValue, true)}</span>
         <span className={classes.amountFiat}>
           {tx.currency !== props.currencyCode && `${tx.currency} `}
-          {formatFiat(tx.fiatValue, props.getCurrencySymbol(tx.currency), true)}
+          {formatFiat(tx.fiatValue, tx.currency, true)}
         </span>
       </div>
       <table className={classes.table}>

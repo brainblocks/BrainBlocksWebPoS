@@ -6,6 +6,7 @@
     "airbnb-browser-shims": "^3.0.0",
     "axios": "^0.18.0",
     "color": "^3.0.0",
+    "currency-symbol-map": "^4.0.4",
     "emotion": "^9.2.8",
     "emotion-theming": "^9.2.6",
     "mdi-react": "^4.3.0",

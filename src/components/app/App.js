@@ -2,35 +2,15 @@ import React, { Component, Fragment } from 'react'
 import { css } from 'react-emotion'
 import axios from 'axios'
 import config from 'config'
+import currencies from 'constants/currencies'
 import theme from 'theme'
-import { isValidNanoAddress } from 'functions/nano'
+import { isValidNanoAddress, raiToNano } from 'functions/nano'
 import Dashboard from 'components/dashboard/Dashboard'
 import Calculator from 'components/calculator/Calculator'
 import Modal from 'components/modal/Modal'
 import AddressForm from 'components/forms/AddressForm'
 import CurrencyForm from 'components/forms/CurrencyForm'
 import TransactionInfo from 'components/transactions/TransactionInfo'
-
-const getCurrencies = () => {
-  const currencies = [
-    {
-      code: 'AUD',
-      symbol: '$',
-      nanoPrice: 4.18
-    },
-    {
-      code: 'USD',
-      symbol: '$',
-      nanoPrice: 3.4
-    },
-    {
-      code: 'CNY',
-      symbol: '¥',
-      nanoPrice: 21.02
-    }
-  ]
-  return Promise.resolve(currencies)
-}
 
 const getStyles = props => {
   return {
@@ -59,12 +39,11 @@ class App extends Component {
     super(props)
 
     const address = window.localStorage['bb_pos_address'] || ''
-    const currencyCode = window.localStorage['bb_pos_currencycode'] || 'USD'
+    const currencyCode = window.localStorage['bb_pos_currencycode'] || 'usd'
 
     this.state = {
       address,
       currencyCode,
-      currencies: [],
       transactions: [],
       txRequestStatus: 'waiting',
       openPanel: 'dashboard',
@@ -72,22 +51,15 @@ class App extends Component {
       addressFieldValue: address,
       currencyFieldValue: currencyCode,
       currencyNanoPrice: 0,
-      currencySymbol: '$',
       transactionModalIndex: 0
     }
   }
 
   componentDidMount = () => {
-    getCurrencies().then(currencies => {
-      const currency = currencies.find(c => c.code === this.state.currencyCode)
-      this.setState({
-        currencies,
-        currencyNanoPrice: currency.nanoPrice,
-        currencySymbol: currency.symbol
-      })
-    })
+    this.getNanoPrice()
     this.getTransactions()
     this.refresher = setInterval(() => {
+      this.getNanoPrice()
       this.getTransactions()
     }, 30000)
   }
@@ -101,7 +73,7 @@ class App extends Component {
       axios
         .get(config.endpoints.getTransactions)
         .then(res => {
-          this.setState({ transactions: res.data.transactions, txRequestStatus: 'failed' })
+          this.setState({ transactions: res.data.transactions, txRequestStatus: 'done' })
         })
         .catch(e => {
           console.error("Couldn't get transactions", e)
@@ -110,17 +82,21 @@ class App extends Component {
     })
   }
 
-  isAddressFieldValid = () => {
-    return isValidNanoAddress(this.state.addressFieldValue)
+  getNanoPrice = () => {
+    axios
+      .get(`${config.endpoints.getPrice}/${this.state.currencyCode}/1/rai`)
+      .then(res => {
+        console.log(res.data.rai, raiToNano(res.data.rai))
+        this.setState({ currencyNanoPrice: raiToNano(res.data.rai) })
+      })
+      .catch(e => {
+        console.error("Couldn't get transactions", e)
+        this.setState({ txRequestStatus: 'failed' })
+      })
   }
 
-  getCurrencySymbol = code => {
-    const currency = this.state.currencies.find(c => c.code === code)
-    if (currency && currency.hasOwnProperty('symbol')) {
-      return currency.symbol
-    } else {
-      return code + ' '
-    }
+  isAddressFieldValid = () => {
+    return isValidNanoAddress(this.state.addressFieldValue)
   }
 
   getHandleSwitchPanel = panel => () => {
@@ -151,17 +127,14 @@ class App extends Component {
 
   handleSetCurrency = code => {
     code = code || this.state.currencyFieldValue
-    const currency = this.state.currencies.find(c => c.code === code)
-    if (typeof currency === 'undefined') {
-      throw new Error('Currency mismatch')
-    }
-    window.localStorage['bb_pos_currencycode'] = currency.code
-    this.setState({
-      currencyCode: currency.code,
-      currencyNanoPrice: currency.nanoPrice,
-      currencySymbol: currency.symbol,
-      openModal: ''
-    })
+    window.localStorage['bb_pos_currencycode'] = code
+    this.setState(
+      {
+        currencyCode: code,
+        openModal: ''
+      },
+      this.getNanoPrice
+    )
   }
 
   handleOpenModal = modal => () => {
@@ -193,9 +166,7 @@ class App extends Component {
             <Dashboard
               currencies={this.state.currencies}
               transactions={this.state.transactions}
-              currencySymbol={this.state.currencySymbol}
               currencyCode={this.state.currencyCode}
-              getCurrencySymbol={this.getCurrencySymbol}
               posEnabled={isValidNanoAddress(this.state.address)}
               onOpenModal={this.handleOpenModal}
               onOpenPoS={this.getHandleSwitchPanel('pos')}
@@ -207,7 +178,6 @@ class App extends Component {
           {this.state.openPanel === 'pos' && (
             <Calculator
               currencyCode={this.state.currencyCode}
-              currencySymbol={this.state.currencySymbol}
               currencyNanoPrice={this.state.currencyNanoPrice}
               onBack={this.getHandleSwitchPanel('dashboard')}
             />
@@ -216,7 +186,7 @@ class App extends Component {
         {this.state.openModal === 'currency' && (
           <Modal onClose={this.handleCloseModal}>
             <CurrencyForm
-              currencies={this.state.currencies}
+              currencies={currencies}
               currencyFieldValue={this.state.currencyFieldValue}
               onUpdateCurrency={this.handleUpdateCurrencyField}
               onSaveCurrency={this.handleSetCurrency}
@@ -239,7 +209,6 @@ class App extends Component {
               <TransactionInfo
                 transaction={this.state.transactions[this.state.transactionModalIndex]}
                 currencyCode={this.state.currencyCode}
-                getCurrencySymbol={this.getCurrencySymbol}
               />
             )}
           </Modal>

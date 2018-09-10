@@ -77,10 +77,8 @@ const Dashboard = props => {
         <TransactionsTable
           currencies={props.currencies}
           currencyCode={props.currencyCode}
-          currencySymbol={props.currencySymbol}
           transactions={props.transactions.slice(0, 4)}
           onInspectTransaction={props.onInspectTransaction}
-          getCurrencySymbol={props.getCurrencySymbol}
           txRequestStatus={props.txRequestStatus}
           onGetTransactions={props.onGetTransactions}
         />
