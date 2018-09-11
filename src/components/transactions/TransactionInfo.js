@@ -3,6 +3,7 @@ import { css } from 'react-emotion'
 import Color from 'color'
 import theme from 'theme'
 import { formatNano, formatFiat, formatTime, formatDate } from 'functions/format'
+import { raiToNano } from 'functions/nano'
 import ArrowDownIcon from 'mdi-react/ArrowDownIcon'
 import ArrowUpIcon from 'mdi-react/ArrowUpIcon'
 
@@ -139,7 +140,7 @@ const TransactionInfo = props => {
             <ArrowUpIcon size={52} />
           </div>
         )}
-        <span className={classes.amountNano}>{formatNano(tx.nanoValue, true)}</span>
+        <span className={classes.amountNano}>{formatNano(raiToNano(tx.nanoValue), true)}</span>
         <span className={classes.amountFiat}>{formatFiat(tx.fiatValue, tx.currency, true)}</span>
       </div>
       <table className={classes.table}>
@@ -147,8 +148,8 @@ const TransactionInfo = props => {
           <tr>
             <th className={classes.thFirst}>Date</th>
             <td className={classes.tdDate}>
-              {formatTime(tx.timestamp)}{' '}
-              <span className={classes.date}>{formatDate(tx.timestamp)}</span>
+              {formatTime(tx.createdAt)}{' '}
+              <span className={classes.date}>{formatDate(tx.createdAt)}</span>
             </td>
           </tr>
           <tr>

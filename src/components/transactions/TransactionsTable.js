@@ -3,6 +3,7 @@ import { css } from 'react-emotion'
 import Color from 'color'
 import theme from 'theme'
 import { formatNano, formatFiat, formatTimeAgo } from 'functions/format'
+import { raiToNano } from 'functions/nano'
 import ArrowDownIcon from 'mdi-react/ArrowDownIcon'
 import ArrowUpIcon from 'mdi-react/ArrowUpIcon'
 import MoreIcon from 'mdi-react/MoreHorizIcon'
@@ -126,9 +127,12 @@ const getStyles = props => {
     ${tdHideTablet};
     cursor: pointer;
   `
-  const failed = css`
+  const none = css`
     text-align: center;
     margin: 30px;
+  `
+  const failed = css`
+    ${none};
   `
   const retry = css`
     color: ${theme.color.currencyIcon};
@@ -158,6 +162,7 @@ const getStyles = props => {
     nanoval,
     fiatval,
     info,
+    none,
     failed,
     retry
   }
@@ -200,8 +205,8 @@ const TransactionsTable = props => {
                   </div>
                 )}
               </td>
-              <td className={classes.timestamp}>{formatTimeAgo(tx.timestamp, false)}</td>
-              <td className={classes.nanoval}>{formatNano(tx.nanoValue, true)}</td>
+              <td className={classes.timestamp}>{formatTimeAgo(tx.createdAt, false)}</td>
+              <td className={classes.nanoval}>{formatNano(raiToNano(tx.nanoValue), true)}</td>
               <td className={classes.fiatval}>{formatFiat(tx.fiatValue, tx.currency, true)}</td>
               <td className={classes.info}>
                 <MoreIcon />
@@ -210,6 +215,12 @@ const TransactionsTable = props => {
           ))}
         </tbody>
       </table>
+      {props.txRequestStatus === 'done' &&
+        props.transactions.length === 0 && (
+          <div className={classes.none}>
+            <span>There are no transactions yet.</span>
+          </div>
+        )}
       {props.txRequestStatus === 'failed' &&
         props.transactions.length === 0 && (
           <div className={classes.failed}>

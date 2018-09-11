@@ -72,7 +72,7 @@ class App extends Component {
   getTransactions = () => {
     this.setState({ txRequestStatus: 'waiting' }, () => {
       axios
-        .get(config.endpoints.getTransactions)
+        .get(`${config.endpoints.getTransactions}/${this.state.address}`)
         .then(res => {
           this.setState({ transactions: res.data.transactions, txRequestStatus: 'done' })
         })
@@ -90,7 +90,7 @@ class App extends Component {
         this.setState({ currencyNanoPrice: convert(1, 'fiat', raiToNano(res.data.rai)) })
       })
       .catch(e => {
-        console.error("Couldn't get transactions", e)
+        console.error("Couldn't get price", e)
         this.setState({ txRequestStatus: 'failed' })
       })
   }
@@ -119,10 +119,13 @@ class App extends Component {
 
   handleSetAddress = () => {
     window.localStorage['bb_pos_address'] = this.state.addressFieldValue
-    this.setState({
-      address: this.state.addressFieldValue,
-      openModal: ''
-    })
+    this.setState(
+      {
+        address: this.state.addressFieldValue,
+        openModal: ''
+      },
+      this.getTransactions
+    )
   }
 
   handleSetCurrency = code => {
