@@ -140,16 +140,16 @@ const TransactionInfo = props => {
             <ArrowUpIcon size={52} />
           </div>
         )}
-        <span className={classes.amountNano}>{formatNano(raiToNano(tx.nanoValue), true)}</span>
-        <span className={classes.amountFiat}>{formatFiat(tx.fiatValue, tx.currency, true)}</span>
+        <span className={classes.amountNano}>{formatNano(raiToNano(tx.nano_value), true)}</span>
+        <span className={classes.amountFiat}>{formatFiat(tx.fiat_value, tx.currency, true)}</span>
       </div>
       <table className={classes.table}>
         <tbody>
           <tr>
             <th className={classes.thFirst}>Date</th>
             <td className={classes.tdDate}>
-              {formatTime(tx.createdAt)}{' '}
-              <span className={classes.date}>{formatDate(tx.createdAt)}</span>
+              {formatTime(tx.created_at)}{' '}
+              <span className={classes.date}>{formatDate(tx.created_at)}</span>
             </td>
           </tr>
           <tr>
@@ -169,7 +169,7 @@ const TransactionInfo = props => {
               /{' '}
               <a
                 className={classes.link}
-                href={`https://www.nanode.co/block/${tx.block}`}
+                href={`https://www.nanode.co/block/${tx.send_block}`}
                 target="_blank"
               >
                 Transaction

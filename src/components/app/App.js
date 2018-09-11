@@ -184,6 +184,7 @@ class App extends Component {
               currencyCode={this.state.currencyCode}
               currencyNanoPrice={this.state.currencyNanoPrice}
               onBack={this.getHandleSwitchPanel('dashboard')}
+              getTransactions={this.getTransactions}
             />
           )}
         </div>

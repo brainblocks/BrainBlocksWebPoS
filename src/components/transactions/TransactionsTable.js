@@ -205,9 +205,9 @@ const TransactionsTable = props => {
                   </div>
                 )}
               </td>
-              <td className={classes.timestamp}>{formatTimeAgo(tx.createdAt, false)}</td>
-              <td className={classes.nanoval}>{formatNano(raiToNano(tx.nanoValue), true)}</td>
-              <td className={classes.fiatval}>{formatFiat(tx.fiatValue, tx.currency, true)}</td>
+              <td className={classes.timestamp}>{formatTimeAgo(tx.created_at, false)}</td>
+              <td className={classes.nanoval}>{formatNano(raiToNano(tx.nano_value), true)}</td>
+              <td className={classes.fiatval}>{formatFiat(tx.fiat_value, tx.currency, true)}</td>
               <td className={classes.info}>
                 <MoreIcon />
               </td>
