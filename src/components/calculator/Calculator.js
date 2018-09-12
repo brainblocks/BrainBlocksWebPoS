@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { css } from 'react-emotion'
-import axios from 'axios'
-import config from 'config'
 import Color from 'color'
-import OutsideClickHandler from 'react-outside-click-handler'
 import ArrowLeftIcon from 'mdi-react/ArrowLeftIcon'
 import BackspaceIcon from 'mdi-react/BackspaceIcon'
 import CloseIcon from 'mdi-react/CloseIcon'
@@ -274,7 +271,7 @@ const getStyles = props => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.95);
   `
   const paymodule = css`
     position: fixed;
@@ -300,6 +297,10 @@ const getStyles = props => {
     cursor: pointer;
     &:hover {
       background: ${theme.color.headings};
+    }
+    @media (max-width: ${theme.bp.mobile}px) {
+      right: 0;
+      top: -34px;
     }
   `
   return {
@@ -409,30 +410,7 @@ class Calculator extends Component {
   }
 
   handlePaymentCompleted = data => {
-    console.log('Payment successful!', data)
-    axios
-      .get(`${config.endpoints.brainBlocksVerify}/${data.token}/verify`)
-      .then(res => {
-        console.log(res.data)
-        const tx = {
-          address: res.data.destination,
-          link: res.data.sender,
-          send_block: res.data.send_block,
-          type: 'receive',
-          nano_value: res.data.amount_rai,
-          currency: this.props.currencyCode,
-          fiat_value:
-            res.data.currency === this.props.currencyCode
-              ? parseFloat(res.data.amount)
-              : parseFloat(this.state.amountFiat)
-        }
-        return axios.post(`${config.endpoints.addTransaction}`, tx)
-      })
-      .then(res => {
-        console.log('Added transaction', res.data.txId)
-        this.props.getTransactions()
-      })
-      .catch(e => console.error('Error in payment completed promise chain', e))
+    this.props.onPaymentCompleted(data)
     setTimeout(this.handleCloseModule, 3000)
   }
 
@@ -511,18 +489,16 @@ class Calculator extends Component {
         </div>
         {this.state.isPaying && (
           <div className={classes.paybackdrop}>
-            <OutsideClickHandler onOutsideClick={this.handleCloseModule}>
-              <div className={classes.paymodule}>
-                <button className={classes.closemodule} onClick={this.handleCloseModule}>
-                  <CloseIcon />
-                </button>
-                <BrainBlocksModule
-                  onPayment={this.handlePaymentCompleted}
-                  address={this.props.address}
-                  {...moduleProps}
-                />
-              </div>
-            </OutsideClickHandler>
+            <div className={classes.paymodule}>
+              <button className={classes.closemodule} onClick={this.handleCloseModule}>
+                <CloseIcon />
+              </button>
+              <BrainBlocksModule
+                onPayment={this.handlePaymentCompleted}
+                address={this.props.address}
+                {...moduleProps}
+              />
+            </div>
           </div>
         )}
       </div>

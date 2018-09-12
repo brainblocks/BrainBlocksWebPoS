@@ -159,6 +159,36 @@ class App extends Component {
     })
   }
 
+  handlePaymentCompleted = data => {
+    console.log('Payment successful!', data.token)
+    axios
+      .get(`${config.endpoints.brainBlocksVerify}/${data.token}/verify`)
+      .then(res => {
+        console.log(res.data)
+        if (!res.data.fulfilled) {
+          throw new Error('Payment not fulfilled')
+        }
+        const tx = {
+          address: res.data.destination,
+          link: res.data.sender,
+          send_block: res.data.send_block,
+          type: 'receive',
+          nano_value: res.data.amount_rai,
+          currency: this.state.currencyCode,
+          fiat_value:
+            res.data.currency === this.state.currencyCode
+              ? parseFloat(res.data.amount)
+              : parseFloat(this.state.amountFiat)
+        }
+        return axios.post(`${config.endpoints.addTransaction}`, tx)
+      })
+      .then(res => {
+        console.log('Added transaction', res.data.txId)
+        this.getTransactions()
+      })
+      .catch(e => console.error('Error in payment completed promise chain:', e))
+  }
+
   render() {
     const classes = getStyles(this.props)
 
@@ -184,6 +214,7 @@ class App extends Component {
               currencyCode={this.state.currencyCode}
               currencyNanoPrice={this.state.currencyNanoPrice}
               onBack={this.getHandleSwitchPanel('dashboard')}
+              onPaymentCompleted={this.handlePaymentCompleted}
               getTransactions={this.getTransactions}
             />
           )}
