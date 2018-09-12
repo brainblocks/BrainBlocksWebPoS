@@ -159,7 +159,7 @@ class App extends Component {
     })
   }
 
-  handlePaymentCompleted = data => {
+  handlePaymentCompleted = (data, amountFiat) => {
     console.log('Payment successful!', data.token)
     axios
       .get(`${config.endpoints.brainBlocksVerify}/${data.token}/verify`)
@@ -178,7 +178,7 @@ class App extends Component {
           fiat_value:
             res.data.currency === this.state.currencyCode
               ? parseFloat(res.data.amount)
-              : parseFloat(this.state.amountFiat)
+              : parseFloat(amountFiat)
         }
         return axios.post(`${config.endpoints.addTransaction}`, tx)
       })

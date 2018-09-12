@@ -7,6 +7,11 @@ import React, { Component } from 'react'
 
 class BrainBlocksModule extends Component {
   componentDidMount = () => {
+    console.log({
+      destination: this.props.address,
+      currency: this.props.currency,
+      amount: this.props.amount
+    })
     window.brainblocks.Button.render(
       {
         style: {
