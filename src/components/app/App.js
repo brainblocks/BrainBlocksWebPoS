@@ -47,6 +47,7 @@ class App extends Component {
       currencyCode,
       transactions: [],
       txRequestStatus: 'waiting',
+      priceRequestStatus: 'waiting',
       openPanel: 'dashboard',
       openModal: '',
       addressFieldValue: address,
@@ -84,15 +85,20 @@ class App extends Component {
   }
 
   getNanoPrice = () => {
-    axios
-      .get(`${config.endpoints.getPrice}/${this.state.currencyCode}/1/rai`)
-      .then(res => {
-        this.setState({ currencyNanoPrice: convert(1, 'fiat', raiToNano(res.data.rai)) })
-      })
-      .catch(e => {
-        console.error("Couldn't get price", e)
-        this.setState({ txRequestStatus: 'failed' })
-      })
+    this.setState({ priceRequestStatus: 'waiting' }, () => {
+      axios
+        .get(`${config.endpoints.getPrice}/${this.state.currencyCode}/1/rai`)
+        .then(res => {
+          this.setState({
+            currencyNanoPrice: convert(1, 'fiat', raiToNano(res.data.rai)),
+            priceRequestStatus: 'done'
+          })
+        })
+        .catch(e => {
+          console.error("Couldn't get price", e)
+          this.setState({ priceRequestStatus: 'failed' })
+        })
+    })
   }
 
   isAddressFieldValid = () => {
