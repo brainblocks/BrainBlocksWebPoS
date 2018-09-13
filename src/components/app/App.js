@@ -39,8 +39,12 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-    const address = window.localStorage['bb_pos_address'] || ''
+    let address = window.localStorage['bb_pos_address'] || ''
     const currencyCode = window.localStorage['bb_pos_currencycode'] || 'usd'
+
+    if (!isValidNanoAddress(address)) {
+      address = ''
+    }
 
     this.state = {
       address,
@@ -62,7 +66,6 @@ class App extends Component {
     this.getTransactions()
     this.refresher = setInterval(() => {
       this.getNanoPrice()
-      this.getTransactions()
     }, 30000)
   }
 
@@ -178,6 +181,7 @@ class App extends Component {
           address: res.data.destination,
           link: res.data.sender,
           send_block: res.data.send_block,
+          token: data.token,
           type: 'receive',
           nano_value: res.data.amount_rai,
           currency: this.state.currencyCode,
