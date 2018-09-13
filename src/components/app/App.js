@@ -13,7 +13,7 @@ import AddressForm from 'components/forms/AddressForm'
 import CurrencyForm from 'components/forms/CurrencyForm'
 import TransactionInfo from 'components/transactions/TransactionInfo'
 
-const getStyles = props => {
+const getStyles = (props, state) => {
   return {
     container: css`
       background: white;
@@ -23,11 +23,20 @@ const getStyles = props => {
       box-shadow: 10px 10px 120px rgba(0, 0, 0, 0.2);
       margin: auto;
       width: 100%;
-      position: relative;
+      ${state.openPanel === 'pos' &&
+        css`
+          position: absolute;
+          min-height: auto;
+          top: 0;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+        `}
       @media (min-height: ${theme.bp.fullHeight}px) {
         min-height: ${theme.bp.fullHeight}px;
         position: absolute;
         top: 50%;
+        bottom: auto;
         left: 50%;
         transform: translate(-50%, -50%);
       }
@@ -200,7 +209,7 @@ class App extends Component {
   }
 
   render() {
-    const classes = getStyles(this.props)
+    const classes = getStyles(this.props, this.state)
 
     return (
       <Fragment>
