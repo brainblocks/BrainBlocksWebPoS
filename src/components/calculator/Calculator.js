@@ -303,6 +303,11 @@ const getStyles = props => {
       right: 0;
       top: -34px;
     }
+    @media (max-height: 520px) {
+      top: 5px;
+      right: 5px;
+      z-index: 20;
+    }
   `
   return {
     calculator,

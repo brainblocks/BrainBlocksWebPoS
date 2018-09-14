@@ -83,6 +83,7 @@ class App extends Component {
   }
 
   getTransactions = () => {
+    if (!this.state.address) return
     this.setState({ txRequestStatus: 'waiting' }, () => {
       axios
         .get(`${config.endpoints.getTransactions}/${this.state.address}`)
