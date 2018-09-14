@@ -304,7 +304,7 @@ const getStyles = props => {
       top: -34px;
     }
     @media (max-height: 520px) {
-      top: 5px;
+      top: 12px;
       right: 5px;
       z-index: 20;
     }
