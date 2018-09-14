@@ -11,4 +11,8 @@ function nanoToRai(nano) {
   return nano * 1000000
 }
 
-export { isValidNanoAddress, raiToNano, nanoToRai }
+function currencyToNanoViaUSD(currencyUSD, usdRai) {
+  return usdRai / currencyUSD / 1000000
+}
+
+export { isValidNanoAddress, raiToNano, nanoToRai, currencyToNanoViaUSD }

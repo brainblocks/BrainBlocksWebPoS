@@ -2,10 +2,10 @@ import React, { Component, Fragment } from 'react'
 import { css } from 'react-emotion'
 import axios from 'axios'
 import config from 'config'
-import currencies from 'constants/currencies'
+import currencies, { extra_currencies } from 'constants/currencies'
 import theme from 'theme'
 import { convert } from 'functions/calculator'
-import { isValidNanoAddress, raiToNano } from 'functions/nano'
+import { isValidNanoAddress, raiToNano, currencyToNanoViaUSD } from 'functions/nano'
 import Dashboard from 'components/dashboard/Dashboard'
 import Calculator from 'components/calculator/Calculator'
 import Modal from 'components/modal/Modal'
@@ -98,18 +98,48 @@ class App extends Component {
 
   getNanoPrice = () => {
     this.setState({ priceRequestStatus: 'waiting' }, () => {
-      axios
-        .get(`${config.endpoints.getPrice}/${this.state.currencyCode}/1/rai`)
-        .then(res => {
-          this.setState({
-            currencyNanoPrice: convert(1, 'fiat', raiToNano(res.data.rai)),
-            priceRequestStatus: 'done'
+      const currencyCode = this.state.currencyCode
+      let usdRaiPrice, currencyUSDPrice
+      // If it's an extra currency, we need to calculate the
+      // Nano price from the USD price
+      if (extra_currencies.includes(currencyCode)) {
+        axios
+          .get(`${config.endpoints.getPrice}/usd/1/rai`)
+          .then(res => {
+            usdRaiPrice = res.data.rai
+            return axios.get(`${config.endpoints.getCurrency}/${currencyCode}`)
           })
-        })
-        .catch(e => {
-          console.error("Couldn't get price", e)
-          this.setState({ priceRequestStatus: 'failed' })
-        })
+          .then(({ data }) => {
+            currencyUSDPrice = data.currency.price
+            this.setState({
+              currencyNanoPrice: convert(
+                1,
+                'fiat',
+                currencyToNanoViaUSD(currencyUSDPrice, usdRaiPrice)
+              ),
+              priceRequestStatus: 'done'
+            })
+          })
+          .catch(e => {
+            console.error("Couldn't get price", e)
+            this.setState({ priceRequestStatus: 'failed' })
+          })
+      }
+      // Otherwise we get the Nano price in the result
+      else {
+        axios
+          .get(`${config.endpoints.getPrice}/${currencyCode}/1/rai`)
+          .then(res => {
+            this.setState({
+              currencyNanoPrice: convert(1, 'fiat', raiToNano(res.data.rai)),
+              priceRequestStatus: 'done'
+            })
+          })
+          .catch(e => {
+            console.error("Couldn't get price", e)
+            this.setState({ priceRequestStatus: 'failed' })
+          })
+      }
     })
   }
 
@@ -241,7 +271,7 @@ class App extends Component {
         {this.state.openModal === 'currency' && (
           <Modal onClose={this.handleCloseModal}>
             <CurrencyForm
-              currencies={currencies}
+              currencies={currencies.concat(extra_currencies)}
               currencyFieldValue={this.state.currencyFieldValue}
               onUpdateCurrency={this.handleUpdateCurrencyField}
               onSaveCurrency={this.handleSetCurrency}

@@ -28,11 +28,17 @@ function formatFiatOld(fiatVal, currencySymbol, trim = false) {
 function formatFiat(fiatVal, currencyCode, trim = false) {
   const fiatValString = fiatVal + ''
   const val = parseFloat(fiatValString)
-  const digits = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currencyCode.toUpperCase(),
-    maximumFractionDigits: trim ? 2 : 20
-  }).format(val)
+  let digits
+  if (currencyCode === 'VES') {
+    digits =
+      'VES ' + new Intl.NumberFormat('en-US', { maximumFractionDigits: trim ? 2 : 20 }).format(val)
+  } else {
+    digits = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currencyCode.toUpperCase(),
+      maximumFractionDigits: trim ? 2 : 20
+    }).format(val)
+  }
   if (trim) {
     return digits
   } else {

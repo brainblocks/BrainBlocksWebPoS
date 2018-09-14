@@ -7,6 +7,7 @@ import CloseIcon from 'mdi-react/CloseIcon'
 import theme from 'theme'
 import { formatNano, formatFiat } from 'functions/format'
 import { sanitizeValString, convert } from 'functions/calculator'
+import { extra_currencies } from 'constants/currencies'
 import SwitchIcon from 'svg/switch_icon.svg'
 import BrainBlocksModule from 'components/brainblocks/BrainBlocksModule'
 import { nanoToRai } from '../../functions/nano'
@@ -417,7 +418,7 @@ class Calculator extends Component {
   render() {
     const classes = getStyles(this.props)
     const moduleProps = {}
-    if (this.state.editing === 'amountNano') {
+    if (this.state.editing === 'amountNano' || extra_currencies.includes(this.props.currencyCode)) {
       moduleProps.currency = 'rai'
       moduleProps.amount = nanoToRai(this.state.amountNano)
     } else {
@@ -482,7 +483,7 @@ class Calculator extends Component {
             id={`key-pay`}
             className={classes.key_pay}
             onClick={this.handlePay}
-            disabled={this.state[this.state.editing] === '0'}
+            disabled={parseFloat(this.state[this.state.editing]) <= 0}
           >
             <span className={classes.key_content}>Pay</span>
           </button>
