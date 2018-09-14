@@ -1,5 +1,5 @@
 {
-  "name": "BrainBlocks Web Point-Of-Sale System",
+  "name": "BrainBlocks PoS",
   "short_name": "BrainBlocks PoS",
   "icons": [
     {
@@ -14,7 +14,7 @@
     }
   ],
   "theme_color": "#1a2d58",
-  "background_color": "#1a2d58",
+  "background_color": "#ffffff",
   "start_url": "./index.html",
   "display": "standalone"
 }

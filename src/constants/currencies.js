@@ -34,4 +34,6 @@ const currencies = [
   'zar'
 ]
 
+export const extra_currencies = ['VES']
+
 export default currencies

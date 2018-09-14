@@ -5,9 +5,12 @@ import SelectField from 'components/forms/SelectField'
 import Button from 'components/button/Button'
 
 const CurrencyForm = props => {
-  const currencies = props.currencies.map(c => ({
+  const allCurrencies = props.currencies.slice().sort((a, b) => {
+    return a.toLowerCase().localeCompare(b.toLowerCase())
+  })
+  const currencies = allCurrencies.map(c => ({
     value: c,
-    title: `${c.toUpperCase()} ${getSymbolFromCurrency(c.toUpperCase())}`
+    title: `${c.toUpperCase()} ${getSymbolFromCurrency(c.toUpperCase()) || ''}`
   }))
   return (
     <Form>

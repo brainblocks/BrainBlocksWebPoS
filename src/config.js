@@ -5,6 +5,7 @@ export default {
   endpoints: {
     getTransactions: `${dbBaseUrl}/transactions`,
     addTransaction: `${dbBaseUrl}/transaction`,
+    getCurrency: `${dbBaseUrl}/currencies`,
     getPrice: 'https://brainblocks.io/api/exchange',
     brainBlocksVerify: 'https://brainblocks.io/api/session'
   }
