@@ -59,7 +59,7 @@ class App extends Component {
       address,
       currencyCode,
       transactions: [],
-      txRequestStatus: 'waiting',
+      txRequestStatus: 'done',
       priceRequestStatus: 'waiting',
       openPanel: 'dashboard',
       openModal: '',
