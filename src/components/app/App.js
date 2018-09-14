@@ -87,6 +87,7 @@ class App extends Component {
       axios
         .get(`${config.endpoints.getTransactions}/${this.state.address}`)
         .then(res => {
+          console.log(JSON.stringify(res.data.transactions))
           this.setState({ transactions: res.data.transactions, txRequestStatus: 'done' })
         })
         .catch(e => {
