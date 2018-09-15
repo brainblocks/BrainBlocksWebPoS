@@ -50,7 +50,8 @@ const Dashboard = props => {
         <div className={classes.button}>
           <SVGButton
             icon="wallet"
-            title="Address"
+            title="My Address"
+            titleMobile="Address"
             color={theme.color.walletIcon}
             onClick={props.onOpenModal('address')}
           />
@@ -58,7 +59,8 @@ const Dashboard = props => {
         <div className={classes.button}>
           <SVGButton
             icon="currency"
-            title="Currency"
+            title="Set Currency"
+            titleMobile="Currency"
             color={theme.color.currencyIcon}
             onClick={props.onOpenModal('currency')}
           />
@@ -67,7 +69,8 @@ const Dashboard = props => {
           <SVGButton
             disabled={!props.posEnabled}
             icon="calculator"
-            title="PoS"
+            title="Create Payment"
+            titleMobile="Payment"
             color={theme.color.posIcon}
             onClick={props.onOpenPoS}
           />

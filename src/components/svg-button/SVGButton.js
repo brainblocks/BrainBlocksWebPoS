@@ -67,16 +67,30 @@ const getStyles = props => {
     text-align: center;
     padding: 10px 0;
     font-weight: 600;
+    font-size: 14px;
     @media (min-width: ${theme.bp.tablet}px) {
       padding: 16px 0;
+      font-size: 16px;
     }
     @media (min-width: ${theme.bp.desktop}px) {
       padding: 20px 0;
       font-size: 20px;
     }
   `
+  const captionDesktop = css`
+    display: none;
+    @media (min-width: ${theme.bp.mobile}px) {
+      display: inline;
+    }
+  `
+  const captionMobile = css`
+    display: inline;
+    @media (min-width: ${theme.bp.mobile}px) {
+      display: none;
+    }
+  `
 
-  return { wrap, button, caption }
+  return { wrap, button, caption, captionDesktop, captionMobile }
 }
 
 const SVGButton = props => {
@@ -87,7 +101,10 @@ const SVGButton = props => {
       <span className={classes.button}>
         <img src={icons[props.icon]} alt={`${props.title} Icon`} />
       </span>
-      <span className={classes.caption}>{props.title}</span>
+      <span className={classes.caption}>
+        <span className={classes.captionDesktop}>{props.title}</span>
+        <span className={classes.captionMobile}>{props.titleMobile}</span>
+      </span>
     </a>
   )
 }

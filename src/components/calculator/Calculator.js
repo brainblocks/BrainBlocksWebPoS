@@ -10,7 +10,8 @@ import { sanitizeValString, convert } from 'functions/calculator'
 import { extra_currencies } from 'constants/currencies'
 import SwitchIcon from 'svg/switch_icon.svg'
 import BrainBlocksModule from 'components/brainblocks/BrainBlocksModule'
-import { nanoToRai } from '../../functions/nano'
+import { nanoToRai } from 'functions/nano'
+import { MAX_MODULE_NANO_AMOUNT } from 'constants/module'
 
 const buttons = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.']
 
@@ -106,20 +107,25 @@ const getStyles = props => {
     -webkit-tap-highlight-color: ${theme.color.lightestgray};
     letter-spacing: 0.2em;
     font-size: 3.4vw;
+    touch-action: manipulation;
     @media (min-width: ${theme.bp.fullWidth}px) {
       font-size: 34px;
     }
     @media (max-width: ${theme.bp.mobile}px) {
       font-size: 22px;
     }
-    &:active,
-    &:hover {
+    &:active {
       background: ${theme.color.lightestgray};
     }
     &:disabled {
       cursor: default;
       background: white;
       color: #999;
+    }
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        background: ${theme.color.lightestgray};
+      }
     }
   `
   const key_right = css`
@@ -185,8 +191,11 @@ const getStyles = props => {
     ${key_bottom};
     left: 25%;
     span {
-      font-size: 6vw;
+      font-size: 54px;
       line-height: 1;
+      @media (max-width: ${theme.bp.mobile}px) {
+        font-size: 44px;
+      }
     }
   `
   const key_backspace = css`
@@ -232,7 +241,6 @@ const getStyles = props => {
     -webkit-tap-highlight-color: ${Color(theme.color.posIcon)
       .darken(0.15)
       .string()};
-    &:hover,
     &:active {
       background: ${Color(theme.color.posIcon)
         .darken(0.15)
@@ -243,6 +251,13 @@ const getStyles = props => {
         .lighten(0.25)
         .string()};
       color: #fff;
+    }
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        background: ${Color(theme.color.posIcon)
+          .darken(0.15)
+          .string()};
+      }
     }
     @media (min-width: ${theme.bp.fullWidth}px) {
       font-size: 28px;
@@ -371,7 +386,9 @@ class Calculator extends Component {
 
   getHandleKeypress = key => () => {
     const newAmount = this.state[this.state.editing] + key
-    this.setState(this.calculate(newAmount))
+    const amounts = this.calculate(newAmount)
+    if (parseFloat(amounts.amountNano) > MAX_MODULE_NANO_AMOUNT) return
+    this.setState(amounts)
   }
 
   handleBackspace = () => {
@@ -389,6 +406,13 @@ class Calculator extends Component {
 
   handleSwitch = () => {
     const editingBeforeSwitch = this.state.editing
+    let valueBeforeSwitch = this.state[editingBeforeSwitch]
+    if (
+      editingBeforeSwitch === 'amountFiat' &&
+      parseFloat(this.state.amountFiat) > MAX_MODULE_NANO_AMOUNT
+    ) {
+      valueBeforeSwitch = MAX_MODULE_NANO_AMOUNT.toString()
+    }
     // First update editing
     this.setState(
       {
@@ -396,7 +420,7 @@ class Calculator extends Component {
       },
       // Then run calculate again using the editingBeforeSwitch value
       () => {
-        this.setState(this.calculate(this.state[editingBeforeSwitch]))
+        this.setState(this.calculate(valueBeforeSwitch))
       }
     )
   }
@@ -462,7 +486,9 @@ class Calculator extends Component {
               onClick={this.getHandleKeypress(btn)}
               disabled={btn === '.' && this.state[this.state.editing].indexOf('.') >= 0}
             >
-              <span className={classes.key_content}>{btn}</span>
+              <span className={classes.key_content}>
+                {btn === '.' ? <span>&middot;</span> : btn}
+              </span>
             </button>
           ))}
           <button
@@ -490,7 +516,7 @@ class Calculator extends Component {
             onClick={this.handlePay}
             disabled={parseFloat(this.state[this.state.editing]) <= 0}
           >
-            <span className={classes.key_content}>Pay</span>
+            <span className={classes.key_content}>Receive</span>
           </button>
         </div>
         {this.state.isPaying && (
