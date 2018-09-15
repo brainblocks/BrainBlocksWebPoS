@@ -1,0 +1,1 @@
+export const MAX_MODULE_NANO_AMOUNT = 50000000

@@ -209,7 +209,7 @@ const TransactionsTable = props => {
               <td className={classes.nanoval}>{formatNano(raiToNano(tx.nano_value), true)}</td>
               <td className={classes.fiatval}>{formatFiat(tx.fiat_value, tx.currency, true)}</td>
               <td className={classes.info}>
-                <MoreIcon />
+                <MoreIcon style={{ verticalAlign: 'middle' }} />
               </td>
             </tr>
           ))}
