@@ -4,9 +4,11 @@ import TextInput from 'components/forms/TextInput'
 import Button from 'components/button/Button'
 
 const AddressForm = props => {
+  const { t } = props
+
   return (
     <Form>
-      <FormField label="Please enter your NANO address" for="address">
+      <FormField label={t('addressFieldLabel')} for="address">
         <TextInput
           id="address"
           value={props.addressFieldValue}
@@ -19,11 +21,11 @@ const AddressForm = props => {
         onClick={props.onSaveAddress}
         style={{ marginBottom: 5 }}
       >
-        Save
+        {t('addressFormSave')}
       </Button>
       <span style={{ display: 'inline-block', margin: '0 0.5em' }}>or</span>
       <Button type="secondary" el="a" href="https://nanowallet.io" target="_blank">
-        Create New Wallet
+        {t('addressFormCreateNew')}
       </Button>
     </Form>
   )

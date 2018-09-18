@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { css } from 'react-emotion'
+import { translate } from 'react-i18next'
 import axios from 'axios'
 import config from 'config'
 import currencies, { extra_currencies } from 'constants/currencies'
@@ -88,7 +89,6 @@ class App extends Component {
       axios
         .get(`${config.endpoints.getTransactions}/${this.state.address}`)
         .then(res => {
-          console.log(JSON.stringify(res.data.transactions))
           this.setState({ transactions: res.data.transactions, txRequestStatus: 'done' })
         })
         .catch(e => {
@@ -248,6 +248,7 @@ class App extends Component {
         <div className={classes.container}>
           {this.state.openPanel === 'dashboard' && (
             <Dashboard
+              t={this.props.t}
               currencies={this.state.currencies}
               transactions={this.state.transactions}
               currencyCode={this.state.currencyCode}
@@ -261,6 +262,7 @@ class App extends Component {
           )}
           {this.state.openPanel === 'pos' && (
             <Calculator
+              t={this.props.t}
               address={this.state.address}
               currencyCode={this.state.currencyCode}
               currencyNanoPrice={this.state.currencyNanoPrice}
@@ -273,6 +275,7 @@ class App extends Component {
         {this.state.openModal === 'currency' && (
           <Modal onClose={this.handleCloseModal}>
             <CurrencyForm
+              t={this.props.t}
               currencies={currencies.concat(extra_currencies)}
               currencyFieldValue={this.state.currencyFieldValue}
               onUpdateCurrency={this.handleUpdateCurrencyField}
@@ -283,6 +286,7 @@ class App extends Component {
         {this.state.openModal === 'address' && (
           <Modal onClose={this.handleCloseModal}>
             <AddressForm
+              t={this.props.t}
               addressFieldValue={this.state.addressFieldValue}
               addressFieldValid={this.isAddressFieldValid()}
               onUpdateAddress={this.handleUpdateAddressField}
@@ -294,6 +298,7 @@ class App extends Component {
           <Modal onClose={this.handleCloseModal}>
             {this.state.transactions.length >= 1 && (
               <TransactionInfo
+                t={this.props.t}
                 transaction={this.state.transactions[this.state.transactionModalIndex]}
                 currencyCode={this.state.currencyCode}
               />
@@ -305,4 +310,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default translate('translations')(App)
