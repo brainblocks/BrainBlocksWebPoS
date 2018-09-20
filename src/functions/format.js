@@ -32,7 +32,7 @@ function formatFiat(fiatVal, currencyCode, trim = false) {
   const fiatValString = fiatVal + ''
   const val = parseFloat(fiatValString)
   let digits
-  if (currencyCode === 'VES') {
+  if (currencyCode === 'ves') {
     digits =
       'VES ' + new Intl.NumberFormat('en-US', { maximumFractionDigits: trim ? 2 : 20 }).format(val)
   } else {

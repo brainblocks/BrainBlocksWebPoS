@@ -59,11 +59,14 @@ class App extends Component {
     let currencyCode = window.localStorage['bb_pos_currencycode']
     if (
       !currencyCode &&
-      window.hasOwnProperty('COUNTRY_DATA') &&
-      window.COUNTRY_DATA.hasOwnProperty('country_code')
+      window.hasOwnProperty('LOCALE_DATA') &&
+      window.LOCALE_DATA.hasOwnProperty('country_code')
     ) {
-      currencyCode = mapCountryCodeToCurrency(window.COUNTRY_DATA.country_code)
+      currencyCode = mapCountryCodeToCurrency(window.LOCALE_DATA.country_code)
       console.log(currencyCode)
+    }
+    if (!currencyCode) {
+      currencyCode = 'usd'
     }
 
     this.state = {
