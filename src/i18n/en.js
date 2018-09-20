@@ -9,7 +9,7 @@ export const en = {
   txTableType: 'Type',
   txTableTime: 'Time',
   txTableAmount: 'Amount',
-  txTableFiat: 'Fiat',
+  txTableFiat: 'Total',
   txTableMore: 'Extra',
   noTransactionsYet: 'There are no transactions yet.',
   failedGettingTransactions: "Couldn't get transactions.",
