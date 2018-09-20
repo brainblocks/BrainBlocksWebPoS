@@ -125,6 +125,7 @@ const getStyles = props => {
 }
 
 const TransactionInfo = props => {
+  const { t } = props
   const classes = getStyles(props)
   const tx = props.transaction
 
@@ -146,25 +147,25 @@ const TransactionInfo = props => {
       <table className={classes.table}>
         <tbody>
           <tr>
-            <th className={classes.thFirst}>Date</th>
+            <th className={classes.thFirst}>{t('txInfoDate')}</th>
             <td className={classes.tdDate}>
               {formatTime(tx.created_at)}{' '}
               <span className={classes.date}>{formatDate(tx.created_at)}</span>
             </td>
           </tr>
           <tr>
-            <th className={classes.th}>Address</th>
+            <th className={classes.th}>{t('txInfoAddress')}</th>
             <td className={classes.tdAddr}>{tx.link}</td>
           </tr>
           <tr>
-            <th className={classes.th}>Explorer</th>
+            <th className={classes.th}>{t('txInfoExplorer')}</th>
             <td className={classes.tdExp}>
               <a
                 className={classes.link}
                 href={`https://www.nanode.co/account/${tx.link}`}
                 target="_blank"
               >
-                Address
+                {t('txInfoExploreAddress')}
               </a>{' '}
               /{' '}
               <a
@@ -172,7 +173,7 @@ const TransactionInfo = props => {
                 href={`https://www.nanode.co/block/${tx.send_block}`}
                 target="_blank"
               >
-                Transaction
+                {t('txInfoExploreTransaction')}
               </a>
             </td>
           </tr>

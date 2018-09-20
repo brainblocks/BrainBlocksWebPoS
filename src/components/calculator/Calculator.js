@@ -456,6 +456,7 @@ class Calculator extends Component {
   }
 
   render() {
+    const { t } = this.props
     const classes = getStyles(this.props)
     const moduleProps = {}
     if (this.state.editing === 'amountNano' || extra_currencies.includes(this.props.currencyCode)) {
@@ -470,7 +471,7 @@ class Calculator extends Component {
       <div className={classes.calculator}>
         <div className={classes.display}>
           <button className={classes.back} onClick={this.props.onBack}>
-            <ArrowLeftIcon /> <span>Dashboard</span>
+            <ArrowLeftIcon /> <span>{t('posBackBtn')}</span>
           </button>
           {this.state.editing === 'amountNano' ? (
             <div className={classes.currs}>
@@ -516,7 +517,7 @@ class Calculator extends Component {
             onClick={this.handleClear}
             disabled={this.state[this.state.editing] === '0'}
           >
-            <span className={classes.key_content}>Clear</span>
+            <span className={classes.key_content}>{t('posClearBtn')}</span>
           </button>
           <button id={`key-switch`} className={classes.key_switch} onClick={this.handleSwitch}>
             <img className={classes.key_icon} src={SwitchIcon} alt="Switch" />
@@ -527,7 +528,7 @@ class Calculator extends Component {
             onClick={this.handlePay}
             disabled={parseFloat(this.state[this.state.editing]) <= 0}
           >
-            <span className={classes.key_content}>Receive</span>
+            <span className={classes.key_content}>{t('posReceiveBtn')}</span>
           </button>
         </div>
         {this.state.isPaying && (

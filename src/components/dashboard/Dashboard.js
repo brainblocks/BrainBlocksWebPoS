@@ -1,6 +1,7 @@
 import React from 'react'
 import { css } from 'react-emotion'
 import theme from 'theme'
+import LanguageSwitcher from 'components/i18n/LanguageSwitcher'
 import SVGButton from 'components/svg-button/SVGButton'
 import BrainblocksPOSLogo from 'svg/brainblocks_pos_logo.svg'
 import TransactionsTable from 'components/transactions/TransactionsTable'
@@ -18,11 +19,16 @@ const getStyles = props => {
 
   const header = css`
     margin-bottom: 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     img {
       width: 60%;
       max-width: 320px;
     }
   `
+
+  const languageSwitcher = css``
 
   const buttons = css`
     display: flex;
@@ -35,23 +41,27 @@ const getStyles = props => {
   `
 
   const transactions = css``
-  return { dashboard, header, buttons, button, transactions }
+  return { dashboard, header, languageSwitcher, buttons, button, transactions }
 }
 
 const Dashboard = props => {
+  const { t } = props
   const classes = getStyles(props)
 
   return (
     <div className={classes.dashboard}>
       <div className={classes.header}>
         <img src={BrainblocksPOSLogo} alt="BrainBlocks Logo" />
+        <div className={classes.languageSwitcher}>
+          <LanguageSwitcher />
+        </div>
       </div>
       <div className={classes.buttons}>
         <div className={classes.button}>
           <SVGButton
             icon="wallet"
-            title="My Address"
-            titleMobile="Address"
+            title={t('addressBtn')}
+            titleMobile={t('addressBtnMobile')}
             color={theme.color.walletIcon}
             onClick={props.onOpenModal('address')}
           />
@@ -59,8 +69,8 @@ const Dashboard = props => {
         <div className={classes.button}>
           <SVGButton
             icon="currency"
-            title="Set Currency"
-            titleMobile="Currency"
+            title={t('currencyBtn')}
+            titleMobile={t('currencyBtnMobile')}
             color={theme.color.currencyIcon}
             onClick={props.onOpenModal('currency')}
           />
@@ -69,8 +79,8 @@ const Dashboard = props => {
           <SVGButton
             disabled={!props.posEnabled}
             icon="calculator"
-            title="Create Payment"
-            titleMobile="Payment"
+            title={t('posButton')}
+            titleMobile={t('posButtonMobile')}
             color={theme.color.posIcon}
             onClick={props.onOpenPoS}
           />
@@ -78,6 +88,7 @@ const Dashboard = props => {
       </div>
       <div className={classes.transactions}>
         <TransactionsTable
+          t={props.t}
           currencies={props.currencies}
           currencyCode={props.currencyCode}
           transactions={props.transactions.slice(0, 4)}

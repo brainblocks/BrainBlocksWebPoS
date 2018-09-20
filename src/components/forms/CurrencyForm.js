@@ -5,6 +5,7 @@ import SelectField from 'components/forms/SelectField'
 import Button from 'components/button/Button'
 
 const CurrencyForm = props => {
+  const { t } = props
   const allCurrencies = props.currencies.slice().sort((a, b) => {
     return a.toLowerCase().localeCompare(b.toLowerCase())
   })
@@ -14,7 +15,7 @@ const CurrencyForm = props => {
   }))
   return (
     <Form>
-      <FormField label="Select your currency" for="currency">
+      <FormField label={t('currencyFieldLabel')} for="currency">
         <SelectField
           id="currency"
           value={props.currencyFieldValue}
@@ -23,7 +24,7 @@ const CurrencyForm = props => {
           style={{ fontSize: 30, padding: '0.5em 2em 0.5em 1em' }}
         />
       </FormField>
-      <Button onClick={() => props.onSaveCurrency()}>Save</Button>
+      <Button onClick={() => props.onSaveCurrency()}>{t('currencyFormSave')}</Button>
     </Form>
   )
 }

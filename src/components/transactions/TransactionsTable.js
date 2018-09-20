@@ -169,22 +169,23 @@ const getStyles = props => {
 }
 
 const TransactionsTable = props => {
+  const { t } = props
   const classes = getStyles(props)
 
   return (
     <div className={classes.wrap}>
       <h2 className={classes.title}>
-        Recent Transactions{' '}
+        {t('txTableTitle')}{' '}
         {props.txRequestStatus === 'waiting' && <LoadingIcon className={classes.loading} />}
       </h2>
       <table className={classes.table}>
         <thead>
           <tr>
-            <th className={classes.thType}>Type</th>
-            <th className={classes.thTime}>Time</th>
-            <th className={classes.thAmount}>Amount</th>
-            <th className={classes.thFiat}>Fiat</th>
-            <th className={classes.thMore}>More</th>
+            <th className={classes.thType}>{t('txTableType')}</th>
+            <th className={classes.thTime}>{t('txTableTime')}</th>
+            <th className={classes.thAmount}>{t('txTableAmount')}</th>
+            <th className={classes.thFiat}>{t('txTableFiat')}</th>
+            <th className={classes.thMore}>{t('txTableMore')}</th>
           </tr>
         </thead>
         <tbody>
@@ -218,16 +219,16 @@ const TransactionsTable = props => {
       {props.txRequestStatus === 'done' &&
         props.transactions.length === 0 && (
           <div className={classes.none}>
-            <span>There are no transactions yet.</span>
+            <span>{t('noTransactionsYet')}</span>
           </div>
         )}
       {props.txRequestStatus === 'failed' &&
         props.transactions.length === 0 && (
           <div className={classes.failed}>
             <span>
-              Couldn't get transactions.{' '}
+              {t('failedGettingTransactions')}{' '}
               <span className={classes.retry} onClick={props.onGetTransactions}>
-                Retry
+                {t('retry')}
               </span>
             </span>
           </div>

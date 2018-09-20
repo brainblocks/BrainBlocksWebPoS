@@ -1,11 +1,14 @@
 import React, { Component, Fragment } from 'react'
 import { css } from 'react-emotion'
+import { translate } from 'react-i18next'
 import axios from 'axios'
 import config from 'config'
 import currencies, { extra_currencies } from 'constants/currencies'
 import theme from 'theme'
 import { convert } from 'functions/calculator'
+import { mapCountryCodeToCurrency } from 'functions/locale'
 import { isValidNanoAddress, raiToNano, currencyToNanoViaUSD } from 'functions/nano'
+import { changeMomentLocale } from 'functions/format'
 import Dashboard from 'components/dashboard/Dashboard'
 import Calculator from 'components/calculator/Calculator'
 import Modal from 'components/modal/Modal'
@@ -49,10 +52,18 @@ class App extends Component {
     super(props)
 
     let address = window.localStorage['bb_pos_address'] || ''
-    const currencyCode = window.localStorage['bb_pos_currencycode'] || 'usd'
-
     if (!isValidNanoAddress(address)) {
       address = ''
+    }
+
+    let currencyCode = window.localStorage['bb_pos_currencycode']
+    if (
+      !currencyCode &&
+      window.hasOwnProperty('COUNTRY_DATA') &&
+      window.COUNTRY_DATA.hasOwnProperty('country_code')
+    ) {
+      currencyCode = mapCountryCodeToCurrency(window.COUNTRY_DATA.country_code)
+      console.log(currencyCode)
     }
 
     this.state = {
@@ -71,6 +82,8 @@ class App extends Component {
   }
 
   componentDidMount = () => {
+    console.log(this.props.i18n)
+    changeMomentLocale(this.props.i18n.language)
     this.getNanoPrice()
     this.getTransactions()
     this.refresher = setInterval(() => {
@@ -88,7 +101,6 @@ class App extends Component {
       axios
         .get(`${config.endpoints.getTransactions}/${this.state.address}`)
         .then(res => {
-          console.log(JSON.stringify(res.data.transactions))
           this.setState({ transactions: res.data.transactions, txRequestStatus: 'done' })
         })
         .catch(e => {
@@ -248,6 +260,7 @@ class App extends Component {
         <div className={classes.container}>
           {this.state.openPanel === 'dashboard' && (
             <Dashboard
+              t={this.props.t}
               currencies={this.state.currencies}
               transactions={this.state.transactions}
               currencyCode={this.state.currencyCode}
@@ -261,6 +274,7 @@ class App extends Component {
           )}
           {this.state.openPanel === 'pos' && (
             <Calculator
+              t={this.props.t}
               address={this.state.address}
               currencyCode={this.state.currencyCode}
               currencyNanoPrice={this.state.currencyNanoPrice}
@@ -273,6 +287,7 @@ class App extends Component {
         {this.state.openModal === 'currency' && (
           <Modal onClose={this.handleCloseModal}>
             <CurrencyForm
+              t={this.props.t}
               currencies={currencies.concat(extra_currencies)}
               currencyFieldValue={this.state.currencyFieldValue}
               onUpdateCurrency={this.handleUpdateCurrencyField}
@@ -283,6 +298,7 @@ class App extends Component {
         {this.state.openModal === 'address' && (
           <Modal onClose={this.handleCloseModal}>
             <AddressForm
+              t={this.props.t}
               addressFieldValue={this.state.addressFieldValue}
               addressFieldValid={this.isAddressFieldValid()}
               onUpdateAddress={this.handleUpdateAddressField}
@@ -294,6 +310,7 @@ class App extends Component {
           <Modal onClose={this.handleCloseModal}>
             {this.state.transactions.length >= 1 && (
               <TransactionInfo
+                t={this.props.t}
                 transaction={this.state.transactions[this.state.transactionModalIndex]}
                 currencyCode={this.state.currencyCode}
               />
@@ -305,4 +322,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default translate('translations')(App)
