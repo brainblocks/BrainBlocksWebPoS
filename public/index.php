@@ -12,35 +12,43 @@ function get_languages_from_http( $lang_header ) {
   return $prefLocales;
 }
 
+function languages_to_array( $languages ) {
+  $return = array();
+  foreach( $languages as $language => $priority ) {
+    array_push($return, $language);
+  }
+  return $return;
+}
+
+$locale_data = array();
+
 // Get language from http header ===
-$languages = array( 'unknown' => 1 );
+$languages_arr = array( 'unknown' );
 if( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
   $languages = get_languages_from_http( $_SERVER['HTTP_ACCEPT_LANGUAGE'] );
+  $languages_arr = languages_to_array( $languages );
 }
+
 // debugging locally
 //$languages = get_languages_from_http( 'fr;q=0.8,en-US,en;q=0.9' );
 
-reset($languages);
-$lang = key($languages);
+$locale_data['accept_languages'] = $languages_arr;
 
 // Get country from Cloudflare header ===
 $country = isset( $_SERVER["HTTP_CF_IPCOUNTRY"] ) ? $_SERVER["HTTP_CF_IPCOUNTRY"] : null;
-$country_json = '';
 
 // debug locally
 //$country = 'AU';
 
 if( $country ) {
-  $country_arr = array( 'country_code' => $country );
-  $country_json = json_encode( $country_arr );
+  $locale_data['country_code'] = $country;
 }
 
-// Read index.html into memory and replace vals
+// Read index.html into memory and replace vals ===
 $file = 'index.html';
 if( file_exists( $file ) ) {
   $index = file_get_contents( $file );
-  $index = str_replace( '__LANGUAGE__', $lang, $index );
-  $index = str_replace( '__COUNTRY_DATA__', $country_json, $index );
+  $index = str_replace( '__LOCALE_DATA__', json_encode( $locale_data ), $index );
 }
 
 echo $index;

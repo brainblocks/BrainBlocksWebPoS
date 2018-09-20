@@ -1,4 +1,5 @@
 export const cn = {
+  or: '要么',
   addressBtn: '我的地址簿',
   addressBtnMobile: '地址',
   currencyBtn: '设置货币',
@@ -12,7 +13,7 @@ export const cn = {
   txTableFiat: '金额',
   txTableMore: '更多',
   noTransactionsYet: '目前没有交易.',
-  failedGettingTransactions: "无法获得交易.",
+  failedGettingTransactions: '无法获得交易.',
   retry: '重试',
   txInfoDate: '日期',
   txInfoAddress: '地址',

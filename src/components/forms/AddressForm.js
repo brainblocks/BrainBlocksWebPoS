@@ -23,7 +23,7 @@ const AddressForm = props => {
       >
         {t('addressFormSave')}
       </Button>
-      <span style={{ display: 'inline-block', margin: '0 0.5em' }}>or</span>
+      <span style={{ display: 'inline-block', margin: '0 0.5em' }}>{t('or')}</span>
       <Button type="secondary" el="a" href="https://nanowallet.io" target="_blank">
         {t('addressFormCreateNew')}
       </Button>
