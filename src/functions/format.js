@@ -1,4 +1,7 @@
 import moment from 'moment-with-locales-es6'
+/*import 'moment/locale/en'
+import 'moment/locale/es'
+import 'moment/locale/zh-cn'*/
 
 function formatNano(nanoVal, trim = false) {
   const nanoValString = nanoVal + ''

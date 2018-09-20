@@ -38,7 +38,7 @@ const LanguageSwitcher = props => {
   const handleChangeLanguage = e => {
     i18n.changeLanguage(e.target.value)
     moment.locale(e.target.value)
-    console.log(moment.locale())
+    console.log(i18n)
   }
 
   return (
