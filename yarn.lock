@@ -2167,6 +2167,10 @@ csstype@^2.5.2:
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.6.tgz#2ae1db2319642d8b80a668d2d025c6196071e788"
 
+currency-code-map@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/currency-code-map/-/currency-code-map-1.0.2.tgz#aa8ef6193aad8671990dfdb5dd562651cffa478e"
+
 currency-symbol-map@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/currency-symbol-map/-/currency-symbol-map-4.0.4.tgz#3cfba625974dd3f86822d327ecbd10248695e95e"
@@ -5152,6 +5156,10 @@ mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkdirp@
   resolved "http://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
     minimist "0.0.8"
+
+moment-with-locales-es6@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/moment-with-locales-es6/-/moment-with-locales-es6-1.0.1.tgz#c2eec19c902f98baa959afeacc34275bb61a3336"
 
 moment@^2.22.2:
   version "2.22.2"

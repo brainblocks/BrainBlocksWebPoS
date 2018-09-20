@@ -1,5 +1,6 @@
 import React from 'react'
 import { translate } from 'react-i18next'
+import { moment } from 'functions/format'
 import { css } from 'react-emotion'
 import theme from 'theme'
 import languages from 'i18n/languages'
@@ -36,6 +37,8 @@ const LanguageSwitcher = props => {
 
   const handleChangeLanguage = e => {
     i18n.changeLanguage(e.target.value)
+    moment.locale(e.target.value)
+    console.log(moment.locale())
   }
 
   return (

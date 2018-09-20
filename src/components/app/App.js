@@ -6,7 +6,9 @@ import config from 'config'
 import currencies, { extra_currencies } from 'constants/currencies'
 import theme from 'theme'
 import { convert } from 'functions/calculator'
+import { mapCountryCodeToCurrency } from 'functions/locale'
 import { isValidNanoAddress, raiToNano, currencyToNanoViaUSD } from 'functions/nano'
+import { changeMomentLocale } from 'functions/format'
 import Dashboard from 'components/dashboard/Dashboard'
 import Calculator from 'components/calculator/Calculator'
 import Modal from 'components/modal/Modal'
@@ -50,10 +52,18 @@ class App extends Component {
     super(props)
 
     let address = window.localStorage['bb_pos_address'] || ''
-    const currencyCode = window.localStorage['bb_pos_currencycode'] || 'usd'
-
     if (!isValidNanoAddress(address)) {
       address = ''
+    }
+
+    let currencyCode = window.localStorage['bb_pos_currencycode']
+    if (
+      !currencyCode &&
+      window.hasOwnProperty('COUNTRY_DATA') &&
+      window.COUNTRY_DATA.hasOwnProperty('country_code')
+    ) {
+      currencyCode = mapCountryCodeToCurrency(window.COUNTRY_DATA.country_code)
+      console.log(currencyCode)
     }
 
     this.state = {
@@ -72,6 +82,8 @@ class App extends Component {
   }
 
   componentDidMount = () => {
+    console.log(this.props.i18n)
+    changeMomentLocale(this.props.i18n.language)
     this.getNanoPrice()
     this.getTransactions()
     this.refresher = setInterval(() => {

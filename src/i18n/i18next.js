@@ -20,6 +20,11 @@ i18n.use(LanguageDetector).init({
 
   react: {
     wait: true
+  },
+
+  detection: {
+    order: ['localStorage', 'htmlTag', 'navigator'],
+    lookupLocalStorage: 'bb_pos_language'
   }
 })
 

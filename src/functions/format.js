@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from 'moment-with-locales-es6'
 
 function formatNano(nanoVal, trim = false) {
   const nanoValString = nanoVal + ''
@@ -64,4 +64,8 @@ function formatDate(timestamp) {
   return moment(timestamp).format('ll')
 }
 
-export { formatNano, formatFiat, formatTimeAgo, formatTime, formatDate }
+function changeMomentLocale(locale) {
+  moment.locale(locale)
+}
+
+export { moment, formatNano, formatFiat, formatTimeAgo, formatTime, formatDate, changeMomentLocale }
