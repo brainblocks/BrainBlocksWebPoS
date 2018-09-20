@@ -198,11 +198,10 @@ const getStyles = props => {
       }
     }
   `
-  const key_backspace = css`
+  const key_switch = css`
     ${key};
     top: 0%;
     ${key_right};
-    color: ${theme.color.headings};
   `
   const key_clear = css`
     ${key};
@@ -216,10 +215,22 @@ const getStyles = props => {
       font-size: 16px;
     }
   `
-  const key_switch = css`
+  const key_backspace = css`
     ${key};
     top: 50%;
     ${key_right};
+    color: ${theme.color.headings};
+    background: ${theme.color.lightestgray};
+    &:disabled {
+      background: ${Color(theme.color.lightestgray)
+        .lighten(0.05)
+        .string()};
+    }
+    &:hover:not(:disabled) {
+      background: ${Color(theme.color.lightestgray)
+        .darken(0.05)
+        .string()};
+    }
   `
   const payGradientLight = Color(theme.color.posIcon)
     .lighten(0.15)
