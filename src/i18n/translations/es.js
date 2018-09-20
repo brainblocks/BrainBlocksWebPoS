@@ -1,4 +1,5 @@
 export const es = {
+  or: 'o',
   addressBtn: 'Mi dirección',
   addressBtnMobile: 'Dirección',
   currencyBtn: 'Elegir moneda',
@@ -12,7 +13,7 @@ export const es = {
   txTableFiat: 'Fiat',
   txTableMore: 'Extra',
   noTransactionsYet: 'Todavía no ha habido transacciones.',
-  failedGettingTransactions: "No hemos podido cargar el historial de transacciones.",
+  failedGettingTransactions: 'No hemos podido cargar el historial de transacciones.',
   retry: 'Reintentar',
   txInfoDate: 'Fecha',
   txInfoAddress: 'Dirección',

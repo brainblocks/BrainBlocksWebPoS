@@ -1,4 +1,5 @@
 export const en = {
+  or: 'or',
   addressBtn: 'My Address',
   addressBtnMobile: 'Address',
   currencyBtn: 'Set Currency',

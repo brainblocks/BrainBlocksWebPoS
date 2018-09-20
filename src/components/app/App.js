@@ -82,7 +82,6 @@ class App extends Component {
   }
 
   componentDidMount = () => {
-    console.log(this.props.i18n)
     changeMomentLocale(this.props.i18n.language)
     this.getNanoPrice()
     this.getTransactions()

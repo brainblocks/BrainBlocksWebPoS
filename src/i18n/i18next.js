@@ -1,8 +1,12 @@
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
+import arrayLanguageDetector from './bbpos-language-detector'
 import languages from './languages'
 
-i18n.use(LanguageDetector).init({
+const lngDetector = new LanguageDetector()
+lngDetector.addDetector(arrayLanguageDetector)
+
+i18n.use(lngDetector).init({
   resources: languages,
   fallbackLng: 'en',
   debug: true,
@@ -23,7 +27,7 @@ i18n.use(LanguageDetector).init({
   },
 
   detection: {
-    order: ['localStorage', 'htmlTag', 'navigator'],
+    order: ['localStorage', 'bbPosGetLanguageFromHttpHeader', 'navigator'],
     lookupLocalStorage: 'bb_pos_language'
   }
 })
