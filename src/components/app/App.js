@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { css } from 'react-emotion'
 import { translate } from 'react-i18next'
 import axios from 'axios'
+import ReactGA from 'react-ga'
 import config from 'config'
 import currencies, { extra_currencies } from 'constants/currencies'
 import theme from 'theme'
@@ -50,6 +51,17 @@ const getStyles = (props, state) => {
 class App extends Component {
   constructor(props) {
     super(props)
+    if (config.gaId.indexOf('UA') === 0) {
+      ReactGA.initialize({
+        trackingId: config.gaId,
+        debug: false,
+        gaOptions: {
+          siteSpeedSampleRate: 100,
+          anonymizeIp: true
+        }
+      })
+      ReactGA.pageview('dashboard')
+    }
 
     let address = window.localStorage['bb_pos_address'] || ''
     if (!isValidNanoAddress(address)) {
@@ -164,6 +176,9 @@ class App extends Component {
   }
 
   getHandleSwitchPanel = panel => () => {
+    if (config.gaId.indexOf('UA') === 0) {
+      ReactGA.pageview(panel)
+    }
     this.setState({
       openPanel: panel
     })
@@ -205,6 +220,7 @@ class App extends Component {
   }
 
   handleOpenModal = modal => () => {
+    ReactGA.modalview(modal)
     this.setState({
       openModal: modal
     })
