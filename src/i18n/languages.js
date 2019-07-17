@@ -1,6 +1,7 @@
 import { en as enTranslations } from './translations/en'
 import { es as esTranslations } from './translations/es'
 import { cn as cnTranslations } from './translations/zh-cn'
+import { de as deTranslations } from './translations/de-DE'
 
 export default {
   // Note - make sure we use a locale code that both i18next
@@ -16,5 +17,9 @@ export default {
   'zh-CN': {
     title: '中文',
     translations: cnTranslations
+  },
+  'de-DE': {
+    title: 'Deutsch',
+    translations: deTranslations
   }
 }
