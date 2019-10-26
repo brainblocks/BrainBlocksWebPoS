@@ -2,6 +2,7 @@ import { en as enTranslations } from './translations/en'
 import { es as esTranslations } from './translations/es'
 import { cn as cnTranslations } from './translations/zh-cn'
 import { de as deTranslations } from './translations/de-DE'
+import { br as brTranslations } from './translations/pt-br'
 
 export default {
   // Note - make sure we use a locale code that both i18next
@@ -21,5 +22,8 @@ export default {
   'de-DE': {
     title: 'Deutsch',
     translations: deTranslations
-  }
+  },
+  'pt-BR': {
+    title: 'Português',
+    translations: brTranslations
 }
