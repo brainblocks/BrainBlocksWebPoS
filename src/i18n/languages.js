@@ -26,4 +26,5 @@ export default {
   'pt-BR': {
     title: 'Português',
     translations: brTranslations
+  }
 }
